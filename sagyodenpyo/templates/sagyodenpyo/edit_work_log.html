@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}作業伝票修正{% endblock %}
+
+{% block content %}
+<h1 class="titles">作業伝票修正</h1>
+<div class="subhead">
+    <div>
+    作業伝票修正　　
+    </div>
+</div>
+<br><br><br>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <br>
+        <div class="f_el"><div align="right">
+            <a href="{% url 'sagyoshiji:work_order_list' %}">一覧に戻る</a>　
+            <button type="submit" class="sub_bt" style="padding:10px 20px;">登録</button>
+        </div></div>
+</form>
+{% endblock %}

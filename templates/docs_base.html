@@ -1,0 +1,91 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#ffffff">
+    <title>{% block title %}作業データ管理システム{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="shortcut icon" href="{% static 'ico/shirayama_app_mm.png' %}" >
+    <link rel="manifest" href="{% static 'pwa/manifest.json' %}">
+    <script>
+        if('serviceWorker' in navigator){
+            navigator.serviceWorker.register("{% static 'pwa/service-worker.js' %}")
+            .then(function(registration){
+                console.log('Service Worker registered with scope:', registration.scope);
+            }).catch(function(err){
+                console.log('Service Worker registration failed:', err);
+            });
+        }
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function(){
+            let color = '#5dccfa';
+            document.querySelector('meta[name="theme-color"]').setAttribute('content', color);
+        });
+    </script>
+</head>
+<body>
+    <header>
+        <div class="hsu">
+
+        <a href="/" class="hm"><img src="{% static 'ico/shirayama_app_mm.png' %}" class="h_icon" alt="HOME"><b>Ushiku</b></a>
+        <a href="{% url 'sagyoshiji:work_order_list' %}"class="hm">作業指示票</a>
+        <a href="{% url 'sagyodenpyo:work_logs' %}" class="hm">作業履歴</a>     
+        </div>
+        
+        <div class="hsu">
+
+            <a href="tel:0298698330" class="hm" title="牛久工場へ電話をかける"><img src="{% static 'svgs/call.svg' %}" class="h_icon" alt="電話"></a>
+            <a href="{% url 'docs:app_docs' %}" class="hm"><img src="{% static 'svgs/question.svg' %}" class="h_icon" alt="ヘルプ"></a>
+
+        {% if user.is_authenticated %}
+        <span style="color:rgb(75, 75, 75); font-size: large; border: 1px solid dimgray; border-radius: 5px; padding:10px 5px;"><img src="{% static 'svgs/user.svg' %}" class="h_icon"> {{ user.id|stringformat:"03d" }} : {{ user.first_name }} {{ user.last_name }} </span>　
+        <form action="{% url 'logout' %}" method="post" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit" onclick="return confirm('ログアウトしてもよろしいですか？');">ログアウト</button>
+        </form>
+    {% else %}
+        <a href="{% url 'login' %}" class="hm">ログイン</a>
+        <script>
+            location.href = "{% url 'login' %}";
+        </script>
+    {% endif %}
+    {% if request.user.is_superuser %}
+    <a href="{% url 'admin:index' %}" class="hm" onclick="return alert('管理画面に移動します。');">アカウント管理</a>　
+    {% endif %}
+    </div>
+    </header>
+    <br><br><br>
+    <main>
+        <div align="center">
+        <div class="mokuji">
+            <h3>目次</h3>
+            <ol align="left">
+                <li><a href="{% url 'docs:app_docs' %}">ホーム</a></li>
+                <ol>
+                    <li><a href="/docs/app_docs/#about">本アプリについて</a></li>
+                </ol>
+                <li><a href="{% url 'docs:user_guide' %}">ユーザーガイド</a></li>
+                <ol>
+                    <li><a href="/docs/user_guide/#1">aaa</a></li>
+                </ol>
+            </ol>
+        </div>
+
+        <h1 id="-" align="center">シラヤマ作業管理アプリ</h1>
+        <h3 id="-">ドキュメントページ</h3>
+        <div align="center" class="content">
+        {% block content %}
+        {% endblock %}
+        </div>
+        </div>
+    </main>
+    <noscript>
+        <h1 align="center">Javascriptの設定を確認してください。</h1>
+        <p>JavaScriptが無効なため本サイトにアクセスできません。</p>
+        <p>JavaScriptを有効にしてページを更新してください。</p>
+    </noscript>
+</body>
+</html>

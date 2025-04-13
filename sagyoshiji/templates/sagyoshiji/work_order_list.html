@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}作業指示票{% endblock %}
+
+{% block content %}
+
+<div class="subhead">
+    <div>
+    作業指示票一覧　　
+    <a href="{% url 'sagyoshiji:register_work_order' %}">新規作成</a>
+    {% if work_orders %}
+    <a href="{% url 'sagyoshiji:export_sagyoshijihyo_csv' %}">作業指示票ダウンロード</a>
+    <a href="{% url 'sagyoshiji:export_workorderprogress_csv' %}">進捗データダウンロード</a>
+    {% endif %}
+    </div>
+    <div>
+        作業指示票総数：{{ wo_count }}
+    </div>
+</div>
+<br><br><br>
+
+    
+    {% if not work_orders %}
+        <h1>データがありません</h1>
+        <p>「新規作成」から作成</p>
+    {% else %}
+    
+    {% for order in work_orders %}
+    <a href="{% url 'sagyoshiji:work_order_detail' order.pk %}" style="text-decoration: none; color:black;" title="作業指示の詳細を確認する">
+    <div class="wo_list">
+        
+            <p align="left">作業指示番号：{{ order.work_order_number }}　/　発行日：{{ order.release_date }}</p>
+            <h2><u>工番-枝番：{{ order.work_number }}ー{{ order.work_trenum }} / 件名：{{ order.subject }}</u></h2>
+            <p>計画数：{{ order.planed_value }}、作業開始日：{{ order.start_date }}、作業終了日{{ order.end_date }}</p>
+            <p>作業進捗率：0%</p>
+            <hr color="gray" size="1" width="50%">
+            <a href="{% url 'sagyoshiji:edit_work_order' order.pk %}" class="up_del">修正・作業進捗登録</a>　
+            <a href="{% url 'sagyoshiji:delete_work_order' order.pk %}" class="up_del">削除</a>
+        </tr>
+    </div></a><br>
+        {% endfor %}
+    {% endif %}
+
+{% endblock %}

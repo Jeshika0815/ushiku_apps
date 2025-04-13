@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %}作業伝票入力{% endblock %}
+
+{% block content %}
+<div class="subhead">
+    <div>
+    作業伝票入力　　
+    
+    </div>
+
+</div>
+<br><br><br>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <br>
+    <div class="f_el"><div align="right">
+        <a href="{% url 'sagyodenpyo:work_logs' %}">一覧に戻る</a>　
+        <button type="submit" class="sub_bt" style="padding:10px 20px;">登録</button>
+    </div></div>
+</form><br>
+{% endblock %}
