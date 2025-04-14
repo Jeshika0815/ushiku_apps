@@ -13,7 +13,8 @@ class CustomLogoutView(LogoutView):
     def get(self, request, *args, **kwargs):
         """GET リクエストでもログアウトを許可"""
         return self.post(request, *args, **kwargs)
-    
+
+#　ダッシュボードを表示する関数    
 @login_required
 def home(request):
     try:
