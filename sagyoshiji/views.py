@@ -2,6 +2,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
+from django.db import transaction
+from collections import defaultdict
 import csv
 from .forms import WorkOrderForm, WorkOrderProgressFormSet
 from .models import WorkOrder, WorkOrderProgress
@@ -12,11 +14,14 @@ from django.db.models import Sum
 @login_required
 def work_order_list(request):
     work_orders = WorkOrder.objects.all()
-    work_progress = WorkOrderProgress.objects.all()
+    w_psum = wprogress_all()
+    for order in work_orders:
+        order.progress_rate = w_psum.get(order.id,0)
+
     wo_count = work_orders.count()
     if not work_orders.exists():
         return render(request, 'sagyoshiji/work_order_list.html', {'woerror': '作業指示表のデータが存在しません。登録してください。'})
-    return render(request, 'sagyoshiji/work_order_list.html', {'work_orders': work_orders, 'wo_count':wo_count})
+    return render(request, 'sagyoshiji/work_order_list.html', {'work_orders': work_orders, 'wo_count':wo_count, 'work_progress':w_psum})
 
 
 # 削除機能のビュー
@@ -33,18 +38,11 @@ def delete_work_order(request, pk):
 def register_work_order(request):
     if request.method == 'POST':
         form = WorkOrderForm(request.POST)
-        #formset = WorkOrderProgressFormSet(request.POST, instance=form.instance)
-        print("! Posted")
-        print(f"formdata {form}")
-        #if form.is_valid() and formset.is_valid():
         if form.is_valid():
             form.save()
-            #formset.save()
-            print("! all saved")
             return redirect('sagyoshiji:work_order_list')
     else:
         form = WorkOrderForm()
-        #formset = WorkOrderProgressFormSet(instance=WorkOrder())
     return render(request, 'sagyoshiji/register_work_order.html', {'form': form})
 
 # view the 作業指示票修正
@@ -63,11 +61,13 @@ def edit_work_order(request, pk):
                 # 必要なフィールドが適切に入力されているか確認
                 if instance.daily_result is not None and instance.work_date :
                     print("! check successful")
+                    print(f"! instance {instance}")
                     instance.save()
             # 削除が選択されたインスタンスを削除
             for instance in formset.deleted_objects:
                 print("! instance was delete")
                 instance.delete()
+            calc_prate(work_order.id) #作業進捗率を自動で保存
             return redirect('sagyoshiji:work_order_list')
     else:
         form = WorkOrderForm(instance=work_order)
@@ -80,25 +80,15 @@ def edit_work_order(request, pk):
 def work_order_detail(request, pk):
     # 指定された作業指示票とその進捗データを取得
     work_order = get_object_or_404(WorkOrder, pk=pk)
-    work_orders= WorkOrder.objects.all()  # 関連する進捗データを取得
+    work_orders= WorkOrderProgress.objects.filter(work_order=work_order)  # 関連する進捗データを取得
+    w_psum = wprogress_all()
     
-    total_worked = WorkOrderProgress.objects.filter(work_order=work_order).aggregate(Sum('daily_result'))['daily_result__sum'] or 0
-    progress_rate = (total_worked / work_order.planed_value) * 100 if work_order.planed_value else 0 #caluculations
-    print(f"! result is {progress_rate}")
-    """
-    for order in work_orders:
-        total_worked = WorkOrderProgress.objects.filter(work_order=order).aggregate(Sum('daily_result'))['daily_result__sum'] or 0
-        progress_rate = (total_worked / order.planed_value) * 100 if order.planed_value else 0 #caluculations
-        #saving to db (caluclations result)
-        #order.progress_rate = round(progress_rate, 2)
-        #order.save()
-        print(f"! result is {progress_rate}")
-    """
+    work_order.progress_rate = w_psum.get(work_order.id,0)#各作業指示における進捗率合計
 
     return render(request, 'sagyoshiji/work_order_detail.html', {
         'work_order': work_order,
-        'progresses': work_orders,
-        'progress_rate': progress_rate
+        'work_orders': work_orders,
+        'work_progress': w_psum,
     })
 
 #CSV and PDF download support
@@ -185,26 +175,38 @@ def export_workorderprogress_csv(request):
 
     return response
 
-#import library for create PDF / PDFを生成するためのライブラリを取得
-"""
-from weasyprint import HTML #デバイスがわで用意する必要あり
-from django.template.loader import get_template
+# 作業進捗率の計算
+def calc_prate(work_order_id):
+    progress_data = WorkOrderProgress.objects.filter(work_order_id=work_order_id)
+    with transaction.atomic():
+        for progress in progress_data:
+            # 作業指示票の計画値を取得
+            work_order = progress.work_order
+            if work_order:
+                planed_value = work_order.planed_value
+                # 作業進捗率を計算
+                if planed_value > 0:
+                    progress_rate = (progress.daily_result / planed_value) * 100
+                    if progress.achievement != round(progress_rate, 2):
+                        progress.achievement = round(progress_rate, 2)
+                        print(f"¡ progress :{progress} !")
+                        progress.save()
+                else:
+                    if progress.achievement != 0:
+                        # 計画値が0の場合、進捗率を0にリセット
+                        progress.achievement = 0
+                        progress.save()
 
-@login_required
-def order_detail_to_pdf(request, pk):
-    try:
-        worder = get_object_or_404(WorkOrder, pk=pk)
-    except WorkOrder.DoesNotExist or WorkOrderProgress.DoesNotExist:
-        return HttpResponse('WorkOrder can not found.', status=404)
+# 作業進捗の合計の計算
+def wprogress_all():
+    # get all progress data
+    progress_totals = defaultdict(float)
+    progress_all = WorkOrderProgress.objects.values('work_order_id').annotate(total_pall=Sum('achievement'))
     
-    html_content = get_template("sagyoshiji/work_order_detail.html")
-    context = {'worder':worder}
-    htmls = html_content.render(context)
-
-    # generate pdf
-    pdf_file = HTML(string=htmls).write_pdf()
-
-    response = HttpResponse(pdf_file, content_type='application/pdf')
-    response['Content-Disposition'] = f'filename="作業指示票_{worder.subject}"'
-    return response
-"""
+    
+    for progress in progress_all:
+        worder_id = progress['work_order_id']
+        total_pall = float(progress['total_pall'] or 0)
+        progress_totals[worder_id] += total_pall
+    
+    return dict(progress_totals)

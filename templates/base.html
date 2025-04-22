@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link rel="shortcut icon" href="{% static 'ico/shirayama_app_mm.png' %}" >
     <link rel="manifest" href="{% static 'pwa/manifest.json' %}">
+
     <script>
         if('serviceWorker' in navigator){
             navigator.serviceWorker.register("{% static 'pwa/service-worker.js' %}")
@@ -30,14 +31,13 @@
     <header class="printnot">
         <div class="hsu printnot hsel">
 
-        <a href="/" class="hm"><img src="{% static 'ico/shirayama_app_mm.png' %}" class="h_icon" alt="HOME"><b>Ushiku</b></a>
+        <a href="/" class="hm"><img src="{% static 'ico/shirayama_app_mm.png' %}" class="h_icon" alt="HOME"> <b style="font-weight: bold; font-size: x-large;">Ushiku</b></a>
         <a href="{% url 'sagyoshiji:work_order_list' %}"class="hm">作業指示票</a>
-        <a href="{% url 'sagyodenpyo:work_logs' %}" class="hm">作業履歴</a>     
+        <a href="{% url 'sagyodenpyo:work_logs' %}" class="hm">作業伝票</a>     
         </div>
         
-        <div class="hsu printnot">
+        <div class="hsu printnot hsel">
 
-            <!--a href="tel:0298698330" class="hm"><img src="{% static 'svgs/call.svg' %}" class="h_icon" alt="電話"></a-->
             <a href="{% url 'docs:app_docs' %}" class="hm"><img src="{% static 'svgs/question.svg' %}" class="h_icon" alt="ヘルプ"></a>
 
         {% if user.is_authenticated %}
@@ -56,6 +56,24 @@
     <a href="{% url 'admin:index' %}" class="hm" onclick="return alert('管理画面に移動します。');">アカウント管理</a>　
     {% endif %}
     </div>
+    <div class="hsu printnot hsponly">
+        <span width="200px"><img src="{% static 'ico/shirayama_app_mm.png' %}" class="h_icon" alt="HOME"> <b style="font-weight: bold; font-size: x-large;">Ushiku</b></span>
+    </div>
+    <div class="hsu printnot hsponly">
+        <a href="{% url 'docs:app_docs' %}" class="hm"><img src="{% static 'svgs/question.svg' %}" class="h_icon" alt="ヘルプ"></a>
+
+        {% if user.is_authenticated %}
+        <form action="{% url 'logout' %}" method="post" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit" onclick="return confirm('ログアウトしてもよろしいですか？');" style="color:rgb(75, 75, 75); font-size: large; border: 1px solid dimgray; border-radius: 10px; padding-top: -5px; padding:5px 10px;"><img src="{% static 'svgs/user.svg' %}" class="h_icon"> {{ user.id|stringformat:"03d" }} : {{ user.first_name }} {{ user.last_name }} </button>
+        </form>
+    {% else %}
+        <a href="{% url 'login' %}" class="hm">ログイン</a>
+        <script>
+            location.href = "{% url 'login' %}";
+        </script>
+    {% endif %}
+    </div>
     </header>
     <br><br><br>
     <main>
@@ -69,8 +87,9 @@
     <div class="menus"><div align="center">
         <a href="/" class="hm"><img src="{% static 'svgs/home.svg' %}" class="h_icon" alt="HOME"></a>
         <a href="{% url 'sagyoshiji:work_order_list' %}"class="hm">作業指示票</a>
-        <a href="{% url 'sagyodenpyo:work_logs' %}" class="hm">作業履歴</a>  
+        <a href="{% url 'sagyodenpyo:work_logs' %}" class="hm">作業伝票</a>  
     </div></div>
+    <script src="{% static 'scripts/focus.js' %}"></script>
     <noscript>
         <h1 align="center">Javascriptの設定を確認してください。</h1>
         <p>JavaScriptが無効なため本サイトにアクセスできません。</p>

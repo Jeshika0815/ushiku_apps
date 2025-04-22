@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}作業伝票集計{% endblock %}
+
+{% block content %}
+<div class="subhead">
+    <div>
+    作業伝票集計　　
+    <a href="{% url 'sagyodenpyo:log_work' %}">新規作成</a>
+    <a href="{% url 'sagyodenpyo:work_logs' %}">個人の履歴</a>
+    <a href="{% url 'sagyodenpyo:all-logs' %}">全体の履歴</a>
+    {% if work_logs %}
+    <a href="{% url 'sagyodenpyo:export_work_logs_csv' %}">全体の作業履歴ダウンロード</a>
+    {% endif %}
+    
+    </div>
+    <div>
+        期間内に存在する日数：<b>{{ cout_logs }}日</b>
+    </div>
+</div>
+<br><br><br>
+<h1>Comming Soon</h1>
+
+{% endblock %}

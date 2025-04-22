@@ -6,6 +6,9 @@ from collections import defaultdict
 from .models import WorkLog
 from .forms import WorkLogForm
 import datetime
+from django.db.models import Prefetch
+from itertools import groupby
+from operator import itemgetter
 
 
 from django.contrib.auth.views import LogoutView
@@ -63,10 +66,11 @@ def work_logs(request):
         grouped_logs[date] = list(logs)
     for date, logs in groupby(awork_logs_all, key=lambda log: log.date):
         grouped_logs_all[date] = list(logs)
-    
+    print(f"! worklogs:{awork_logs}")
+    print(f"! grouped_logs:{grouped_logs}")
 
     context = {
-        'work_logs': work_logs,
+        'work_logs': awork_logs,
         'grouped_logs': grouped_logs,
         'grouped_logs_all': grouped_logs_all,
         'total_hours': total_hours,
@@ -78,6 +82,11 @@ def work_logs(request):
     }
 
     return render(request, 'sagyodenpyo/view_wlogs.html', context)
+
+# 作業伝票集計
+@login_required
+def log_totals(request):
+    return render(request , 'sagyodenpyo/view_totals.html')
 
 @login_required
 def log_work(request):
@@ -117,13 +126,6 @@ def work_log_list(request):
     return render(request, 'sagyodenpyo/work_log_list.html', {'work_logs': work_logs})
 
 # 全員の作業履歴を取得し、日付ごとにグループ化してテンプレートに渡すビュー
-from django.shortcuts import render
-from django.contrib.auth.decorators import login_required
-from .models import WorkLog
-from django.db.models import Prefetch
-from itertools import groupby
-from operator import itemgetter
-
 @login_required
 def all_work_logs_by_date(request):
     # 全ての作業履歴を日付順に取得
@@ -135,6 +137,15 @@ def all_work_logs_by_date(request):
         grouped_logs[date] = list(logs)
 
     return render(request, 'sagyodenpyo/all_work_logs_by_date.html', {'grouped_logs': grouped_logs})
+
+#全体の作業履歴のテーブル出力
+@login_required
+def all_logs(request):
+    # 全ての作業履歴を取得
+    work_log = WorkLog.objects.all()
+    # 存在する日数のカウント
+    wl_count = work_log.count()
+    return render(request, 'sagyodenpyo/all_wlogs.html', {'work_log':work_log, 'wl_count':wl_count})
 
 #for CSV download
 import csv

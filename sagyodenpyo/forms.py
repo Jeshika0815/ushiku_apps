@@ -1,5 +1,5 @@
 from django import forms
-from .models import WorkLog
+from .models import WorkLog,WorkOrder
 
 class WorkLogForm(forms.ModelForm):
     class Meta:
@@ -18,3 +18,10 @@ class WorkLogForm(forms.ModelForm):
             'date': forms.DateInput(attrs={'type': 'date'}),  # HTML5の日付入力ウィジェット
             'work_minute': forms.NumberInput(attrs={'step': '5'}),
         }
+    """
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['work_number'] = forms.ChoiceField(
+            choices=[(wo.number, wo.number) for wo in WorkOrder.objects.all()],
+        )
+    """
