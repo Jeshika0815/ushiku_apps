@@ -1,13 +1,19 @@
 from django.contrib import admin
-from .models import Employee, WorkLog
-
+from .models import Employee
+"""
 @admin.register(Employee)
 class EmployeeAdmin(admin.ModelAdmin):
     list_display = ('employee_number', 'name', 'user')  # 表示するフィールド
-    search_fields = ('employee_number', 'name', 'user__username')  # 検索フィールド
+    #search_fields = ('employee_number', 'name', 'user__username')  # 検索フィールド
+    def save_model(self, request, obj, form, change):
+        if not change:
+            obj.user = request.user
+        obj.save()
+admin.site.register(Employee,EmployeeAdmin)
 
 @admin.register(WorkLog)
 class WorkLogAdmin(admin.ModelAdmin):
     list_display = ('employee', 'work_number', 'subject', 'date')  # 表示するフィールド
     search_fields = ('work_number', 'subject', 'employee__name')  # 検索フィールド
     list_filter = ('date', 'employee')  # フィルタリング可能なフィールド
+"""

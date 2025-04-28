@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+import environ
 import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -20,16 +21,20 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 PROJECT_NAME = 'ushiku'
 PROJECT_VERSION = '4.0.0'
 
+# reading from .env
+env = environ.Env()
+env.read_env(os.path.join(BASE_DIR, '.env'))
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-z6q=m%u3e!xdji7cj8tofvn6&w5yxe7+sgfa2-q)qh5#^va=cn'
+SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env('DEBUG')
 
-ALLOWED_HOSTS = ['localhost','127.0.0.1']
+ALLOWED_HOSTS = env.list("A_HOST")
 
 
 # Application definition
@@ -141,6 +146,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
+#STATIC_ROOT = '/home/opc/ushiku_apps/static/'
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static')

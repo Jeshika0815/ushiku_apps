@@ -200,13 +200,13 @@ def calc_prate(work_order_id):
 # 作業進捗の合計の計算
 def wprogress_all():
     # get all progress data
-    progress_totals = defaultdict(float)
+    progress_totals = defaultdict(int)
     progress_all = WorkOrderProgress.objects.values('work_order_id').annotate(total_pall=Sum('achievement'))
     
     
     for progress in progress_all:
         worder_id = progress['work_order_id']
         total_pall = float(progress['total_pall'] or 0)
-        progress_totals[worder_id] += total_pall
+        progress_totals[worder_id] += int(round(total_pall))
     
     return dict(progress_totals)

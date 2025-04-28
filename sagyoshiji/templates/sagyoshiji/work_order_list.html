@@ -7,17 +7,20 @@
 <div class="subhead">
     <div class="none_sp">
     作業指示票一覧　　
+    {% if request.user.is_superuser %}
     <a href="{% url 'sagyoshiji:register_work_order' %}">新規作成</a>
     {% if work_orders %}
     <a href="{% url 'sagyoshiji:export_sagyoshijihyo_csv' %}" >作業指示票ダウンロード</a>
     <a href="{% url 'sagyoshiji:export_workorderprogress_csv' %}" >進捗データダウンロード</a>
-    {% endif %}
+    {% endif %}{% endif %}
     </div>
     <div class="true_dsp" style="text-align: center;">
         作業指示票一覧　
     </div>
     <div class="true_dsp">
+        {% if request.user.is_superuser %}
         <a href="{% url 'sagyoshiji:register_work_order' %}">新規作成</a>　
+        {% endif %}
         総数：{{ wo_count }}
     </div>
     <div class="none_sp">
@@ -42,7 +45,9 @@
             <p>作業進捗率：{{ order.progress_rate }}%</p>
             <hr color="gray" size="1" width="50%">
             <a href="{% url 'sagyoshiji:edit_work_order' order.pk %}" class="up_del">修正・作業進捗登録</a>　
+            {% if request.user.is_superuser %}
             <a href="{% url 'sagyoshiji:delete_work_order' order.pk %}" class="up_del">削除</a>
+            {% endif %}
         </tr>
     </div>
     <div class="wo_list_sp">
@@ -53,7 +58,9 @@
         <h4>作業進捗率：{{ order.progress_rate }}%</h4>
         <hr color="gray" size="1" width="50%">
         <a href="{% url 'sagyoshiji:edit_work_order' order.pk %}" class="up_del">修正・作業進捗登録</a>　
+        {% if request.user.is_superuser %}
         <a href="{% url 'sagyoshiji:delete_work_order' order.pk %}" class="up_del">削除</a>
+        {% endif %}
     </tr>
     </div>
         </a><br>

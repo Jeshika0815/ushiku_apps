@@ -9,7 +9,8 @@
 }
 
 body{margin:0; background-color: var(--base_color); font-family: "Zen Kaku Gothic Antique", sans-serif;}
-body.fullscreen{background:var(--base_color);}
+body.fullscreen{background-color:var(--base_color);}
+main{background:var(--base_color);}
 /*header*/
 header{width:auto; background:var(--shir_color); padding:5px; padding-bottom: 10px; font-size: x-large; display:flex; justify-content: space-between; align-items: center; position: fixed; top:0; left:0; right:0; z-index: 1000;}
 header button{border:none; font-size: large; background:none; border-radius: 5px; padding:5px 10px; color: rgb(75, 75, 75); justify-content: space-between;}
@@ -61,6 +62,10 @@ input[type="text"], input[type="date"], input[type="time"], input[type="number"]
     padding:5px 10px; border-radius: 10px;  background:rgb(230, 230, 230); border:1px solid rgb(200, 200, 200);
 }.work_rangesf textarea{resize:none; border:none; outline: none; font-size: large; background:rgb(230, 230, 230);}
 .work_rangesf input[type="checkbox"]{width: 20px; height: 20px; margin-right: 5px; display: inline-block;}
+
+/* exit fullscreen */
+.fullsc1{display:none; }
+.fullsc2{display:none; }
 
 /* dashboard card */
 .s_container{width:500px; height:300px; position:relative; overflow: hidden; border-radius: 10px;}

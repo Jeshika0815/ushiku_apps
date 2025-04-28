@@ -19,14 +19,16 @@ class CustomLogoutView(LogoutView):
 
 @login_required
 def work_logs(request):
+    # 従業員情報の取得
     try:
         employee = request.user.employee
-    except Employee.DoesNotExist:
+    except employee.DoesNotExist:
         return HttpResponseForbidden("このユーザーには対応する従業員情報がありません。管理者に問い合わせてください。")
+        #return render(request, '403.html', {"message":"このユーザーには対応する従業員情報がありません。管理者に問い合わせてください。"})
     
+    # 日付範囲の指定
     initial_date = now().date()
-
-    selected_date_str = request.GET.get('selected_date')
+    selected_date_str = request.GET.get('selected_date', datetime.datetime.now().strftime('%Y-%m-%d'))
     if selected_date_str:
         try:
             selected_date = datetime.datetime.strptime(selected_date_str, '%Y-%m-%d').date()
@@ -38,43 +40,22 @@ def work_logs(request):
 
     start_date = selected_date
     end_date = start_date + timedelta(days=7)
-    
-
-    work_logs = WorkLog.objects.filter(employee=employee,date__range=(start_date,end_date)).order_by('-date')
-    
-    # 全ての作業履歴を日付順に取得
+        
+    # 作業履歴を日付順に取得
+    work_logs = WorkLog.objects.filter(employee=employee,date__range=(start_date,end_date)).order_by('date')
     awork_logs = WorkLog.objects.select_related('employee').filter(date__range=(start_date,end_date)).order_by('date', 'employee__name')
-    awork_logs_all = WorkLog.objects.select_related('employee').order_by('date','employee__name')
-    #work_hours and work_minutes
-    total_work_hours = work_logs.aggregate(total_hours=Sum('work_hours'),total_minute=Sum('work_minute'))
-
-    #calucration of total work hours
-    total_hours = total_work_hours['total_hours'] or 0
-    total_minute = total_work_hours['total_minute'] or 0
-    total_hours += total_minute // 60
-    remining_minutes = total_minute % 60
-
-    #作業伝票個数表示
+    
+    # 作業時間の自動計算
+    total_hours,remining_minutes = calc_p_wlogs(work_logs)
+    # 作業伝票個数表示
     count_logs = work_logs.count()
-
-
-    # 日付ごとにグループ化
-    grouped_logs = {}
-    grouped_logs_all = {}
-
-    for date, logs in groupby(awork_logs, key=lambda log: log.date):
-        grouped_logs[date] = list(logs)
-    for date, logs in groupby(awork_logs_all, key=lambda log: log.date):
-        grouped_logs_all[date] = list(logs)
-    print(f"! worklogs:{awork_logs}")
-    print(f"! grouped_logs:{grouped_logs}")
-
+    # 個人の作業履歴の取得
+    an_work_log = WorkLog.objects.filter(employee=employee).order_by('-date') 
+    # テンプレートで返す変数群
     context = {
         'work_logs': awork_logs,
-        'grouped_logs': grouped_logs,
-        'grouped_logs_all': grouped_logs_all,
+        'work_log':an_work_log,
         'total_hours': total_hours,
-        'total_minutes': total_minute,
         'remining_minutes': remining_minutes,
         'cout_logs': count_logs,
         'start_date': start_date,
@@ -107,6 +88,7 @@ def edit_work_log(request, pk):
     if request.method == "POST":
         form = WorkLogForm(request.POST, instance=work_log)
         if form.is_valid():
+
             form.save()
             return redirect('sagyodenpyo:work_logs')
     else:
@@ -186,6 +168,27 @@ def export_work_logs_csv(request):
 
     return response
 
+# other functions
 
+# 個人の履歴周り
+def p_work_logs():
+    pass
 
+# 個人の作業時間計算周り
+def calc_p_wlogs(work_logs):
+    # work_hours and work_minutes
+    total_work_hours = work_logs.aggregate(total_hours=Sum('work_hours'),total_minute=Sum('work_minute'))
 
+    # calucration of total work hours
+    total_hours = total_work_hours['total_hours'] or 0
+    total_minute = total_work_hours['total_minute'] or 0
+    total_hours += total_minute // 60
+    remining_minutes = total_minute % 60
+
+    return total_hours, remining_minutes
+
+# 作業伝票集計・工番とその中に枝番ごとにグループ化
+def totaling():
+    
+
+    pass

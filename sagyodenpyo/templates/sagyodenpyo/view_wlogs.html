@@ -7,10 +7,12 @@
     <div>
     作業伝票　　
     <a href="{% url 'sagyodenpyo:log_work' %}">新規作成</a>
-    <a href="{% url 'sagyodenpyo:totals' %}">集計</a>
+    
+    {% if request.user.is_superuser %}
     <a href="{% url 'sagyodenpyo:all-logs' %}">全体の履歴</a>
-    {% if work_logs %}
-    <a href="{% url 'sagyodenpyo:export_work_logs_csv' %}">全体の作業履歴ダウンロード</a>
+    <a href="{% url 'sagyodenpyo:totals' %}">集計</a>
+    
+    <!--a href="{% url 'sagyodenpyo:export_work_logs_csv' %}">全体の作業履歴ダウンロード</a-->
     {% endif %}
     
     </div>
@@ -35,17 +37,6 @@
 <br>
 
 
-<!--
-{% if cout_logs < 0 %}
-<div class="wlog_summary">
-<h3 style="padding:0; margin:0;">作業履歴検索</h3>
-<h3 style="padding:0; margin:0;">{{ cout_logs }}日</h3>
-{% if cout_logs > 0 %}
-<div align="left" class="wlog_summary-body">
-{% for date, logs in grouped_logs.items %}
-<a href="javascript:void(0);" class="wlog_bt" data-date="{{ date }}">{{ date }}</a><br>
-{% endfor %}
-</div>{% endif %}</div>{% endif %}><br-->
 <br>
     {% if cout_logs > 0 %}
     <div class="wlog_c">
@@ -53,7 +44,6 @@
             <table style="margin: 0 auto;"border="1">
                 <thead>
                     <tr>
-                        <th>作業者</th>
                         <th>作業日</th>
                         <th>工番</th>
                         <th>枝番</th>
@@ -67,7 +57,6 @@
                 <tbody>
                     {% for log in work_logs %}
                     <tr>
-                        <td></td>
                         <td>{{ log.date }}</td>
                         <td>{{ log.work_number }}</td>
                         <td>{{ log.work_trenum }}</td>
@@ -80,16 +69,14 @@
                     {% endfor %}
                 </tbody>
             </table>
-        </div><br>
-        {% else %}
-        <div class="wlog_c">
-            <h2 style="padding:0; margin:0; ">{{ start_date|date:"m月 d日" }} から１週間分の履歴</h2><br>
-            <h2 align="center">作業履歴はありません。</h2>
-            <h2 align="center">個人の作業履歴</h2>
+            <br>
+            <hr color="skyblue" size="2"width="80%">
+            <h2 align="center">” {{ user.first_name }} {{ user.last_name }} ”の作業履歴</h2>
+            <p>最新順</p>
             <table style="margin: 0 auto;"border="1">
                 <thead>
                     <tr>
-                        <th>作業者</th>
+                        <th>ID</th>
                         <th>作業日</th>
                         <th>工番</th>
                         <th>枝番</th>
@@ -97,21 +84,59 @@
                         <th>作業コード</th>
                         <th>作業時間</th>
                         <th>分</th>
-                        <th>修正</th>
+                        <th>編集</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for log in work_logs %}
+                    {% for logs in work_log %}
                     <tr>
-                        <td></td>
-                        <td>{{ log.date }}</td>
-                        <td>{{ log.work_number }}</td>
-                        <td>{{ log.work_trenum }}</td>
-                        <td>{{ log.subject }}</td>
-                        <td>{{ log.get_work_code_display }}</td>
-                        <td>{{ log.work_hours }}</td>
-                        <td>{{ log.work_minute }}</td>
-                        <td><a href="{% url 'sagyodenpyo:edit_work_log' log.pk %}">修正</a></td>
+                        <td>{{ logs.id }}</td>
+                        <td>{{ logs.date }}</td>
+                        <td>{{ logs.work_number }}</td>
+                        <td>{{ logs.work_trenum }}</td>
+                        <td>{{ logs.subject }}</td>
+                        <td>{{ logs.get_work_code_display }}</td>
+                        <td>{{ logs.work_hours }}</td>
+                        <td>{{ logs.work_minute }}</td>
+                        <td><a href="{% url 'sagyodenpyo:edit_work_log' log.pk %}">編集</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div><br>
+        {% else %}
+        <div class="wlog_c">
+            <h2 style="padding:0; margin:0; ">{{ start_date|date:"m月 d日" }} から１週間分の履歴</h2>
+            <h2 align="center">作業履歴はありません。</h2>
+            <hr color="skyblue" size="2"width="80%">
+            <h2 align="center">” {{ user.first_name }} {{ user.last_name }} ”の作業履歴</h2>
+            <p>最新順</p>
+            <table style="margin: 0 auto;"border="1">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>作業日</th>
+                        <th>工番</th>
+                        <th>枝番</th>
+                        <th>件名</th>
+                        <th>作業コード</th>
+                        <th>作業時間</th>
+                        <th>分</th>
+                        <th>編集</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for logs in work_log %}
+                    <tr>
+                        <td>{{ logs.id }}</td>
+                        <td>{{ logs.date }}</td>
+                        <td>{{ logs.work_number }}</td>
+                        <td>{{ logs.work_trenum }}</td>
+                        <td>{{ logs.subject }}</td>
+                        <td>{{ logs.get_work_code_display }}</td>
+                        <td>{{ logs.work_hours }}</td>
+                        <td>{{ logs.work_minute }}</td>
+                        <td><a href="{% url 'sagyodenpyo:edit_work_log' log.pk %}">編集</a></td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -140,7 +165,7 @@
                 const month = match[2].padStart(2,'0');//2桁に０埋め
                 const day = match[3].padStart(2,'0');//2桁0埋め
                 //Formated date
-                const formatedDate = `${year}-${month}-${day}`;
+                let formatedDate = `${year}/${month}/${day}`;
                 //show result
                 dateInput.value = formatedDate;
             };

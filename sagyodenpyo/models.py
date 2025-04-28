@@ -1,6 +1,7 @@
 from django.db import models
 from sagyoshiji.models import WorkOrder
 from django.contrib.auth.models import User
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 class Employee(models.Model):
     employee_number = models.CharField("従業員番号", max_length=10, unique=True)
@@ -42,13 +43,13 @@ class WorkLog(models.Model):
 
 
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name="work_logs")
-    #work_order = models.ForeignKey(WorkOrder, on_delete=models.CASCADE, default="")
-    work_number = models.CharField("工番", max_length=4)
-    work_trenum = models.CharField("枝番", max_length=3, default=000)
-    subject = models.CharField("件名", max_length=20)
+    work_order = models.ForeignKey(WorkOrder, on_delete=models.SET_NULL, null=True, blank=True, default=None)
+    work_number = models.CharField("工番", max_length=4, default="")
+    work_trenum = models.CharField("枝番", max_length=3, default="")
+    subject = models.CharField("件名", max_length=20, default="")
     work_code = models.CharField("作業コード", max_length=3, choices=WORK_CODE_CHOICES)
-    work_hours = models.DecimalField("時間", max_digits=4, decimal_places=0, default=0)
-    work_minute = models.DecimalField("分", max_digits=2, decimal_places=0, default=0)
+    work_hours = models.DecimalField("時間", max_digits=4, decimal_places=0, default=0, validators=[MinValueValidator(0), MaxValueValidator(24)])
+    work_minute = models.DecimalField("分", max_digits=2, decimal_places=0, default=0, validators=[MinValueValidator(0), MaxValueValidator(50)])
     date = models.DateField("作業日", auto_now_add=False)
 
     def __str__(self):

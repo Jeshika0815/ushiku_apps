@@ -75,7 +75,7 @@
     <div align=center><img src="{% static 'svgs/add.svg' %}" class="wpad_m" alt=""></div><br><br>
     <div align=center><p class="wpad_fo">作業伝票作成</p></div><br>
     </div></a>
-
+    {% if request.user.is_superuser %}
     <a href="{% url 'sagyoshiji:register_work_order' %}" style="color:black;">
         <div class="wpad">
         <div class="wpad_ma"></div><br>
@@ -89,6 +89,7 @@
         <div align=center><img src="{% static 'svgs/add.svg' %}" class="wpad_m" alt=""></div><br><br>
         <div align=center><p class="wpad_fo">作業伝票集計</p></div><br>
     </div></a>
+    {% endif %}
         
 
 </div></div>

@@ -7,11 +7,16 @@
     <div class="subhead">
         <div>
         作業指示票詳細　No.{{ work_order.work_order_number }}　
+        
         <a href="{% url 'sagyoshiji:edit_work_order' work_order.pk %}">修正・作業進捗登録</a>
+        {% if request.user.is_superuser %}
         <a href="{% url 'sagyoshiji:delete_work_order' work_order.pk %}">削除</a>
+        {% endif %}
         </div>
-    </div><br><br><br><br>
-
+    </div><br><br>
+    <div class="printnot fullsc1" style="font-size: large; padding:5px 10px; background:silver; border-radius: 5px; width:200px;">
+        <span id="timespace"></span>
+    </div><br><br>
     <table style="margin: 0 auto;"border="1">
         <thead>
             <tr>
@@ -86,13 +91,12 @@
                 {% endfor %}
             </tr>
     </table>
-    <br>
-    <div id="wtimer-container" style="text-align: center; margin-bottom: 20px; display: none;">
-        <h3>作業タイマー: <span id="wtimer">0</span> 秒</h3>
-    </div>
 <br><br>
+<div class="printnot fullsc2">
+    <button id="wfinish"  onclick="location.reload();">全画面終了</button><br><br>
+</div>
 <div class="f_el"><div align="right">
-    <button class="sub_bt printnot wstart">作業開始・終了</button>　
+    <button class="sub_bt printnot" id="wstart">全画面</button>　
     <button  onclick="window.print(); return false;" class="printnot sub_bt">印刷</button>　
     <button onclick="history.back();" class="sub_bt printnot">戻る</button>
 </div></div>
@@ -140,7 +144,8 @@
         </div>
         <div style="margin:0;">
             <div style="padding:5px 10px; width:auto; border:1px dashed rgb(74, 74, 74); border-radius:10px;">
-                {{ work_order.work_range }}
+                <p align="left" style="margin:0; font-weight: bold;">作業範囲</p><br>
+                    {{ work_order.work_range }}
                 <br>
                 <h2 align="left">{{ work_order.work_type }}</h2>
             </div>

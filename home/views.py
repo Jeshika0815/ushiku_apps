@@ -18,10 +18,7 @@ class CustomLogoutView(LogoutView):
 #　ダッシュボードを表示する関数    
 @login_required
 def home(request):
-    try:
-        employee = request.user.employee
-    except employee.DoesNotExist:
-        return HttpResponseForbidden('このユーザーには対応する従業員情報がありません。管理者に問い合わせてください。')
+
     
     #work_logs = WorkLog.objects.filter(employee=employee).order_by('-date')
     work_orders = WorkOrder.objects.all()
