@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block title %}作業伝票集計{% endblock %}
+
+{% block content %}
+<div class="subhead">
+    <div>
+    作業伝票集計　　
+    <a href="{% url 'sagyodenpyo:log_work' %}">新規作成</a>
+    <a href="{% url 'sagyodenpyo:work_logs' %}">個人の履歴</a>
+    <a href="{% url 'sagyodenpyo:all-logs' %}">全体の履歴</a>
+    <a href="{% url 'sagyodenpyo:export_work_logs_csv' %}">全体の作業履歴ダウンロード</a>
+    
+    
+    </div>
+    <div>
+        期間内に存在する日数：<b>{{ count_logss }}日</b>
+    </div>
+</div>
+<br><br><br>
+<form method="get">
+    <label for="date">日付を選択:</label>
+    <input type="date" name="date" id="date" value="{{ selected_date|date:'Y-m-d' }}">
+    <button type="submit">集計する</button>
+</form>
+
+
+
+<h2>{{ selected_date|date:'Y年m月d日' }}の総作業時間: {{ total_hours }} 時間 {{ total_minute }}分</h2>
+
+{% if count_logss > 0 %}
+{% for kouban, data in order_summary.items %}
+    <div class="wlog_c">
+    <h2>工番: {{ kouban }}（合計: {{ data.total_hours }} 時間 {{ data.total_minute }}分）</h2>
+
+        <table border style="margin:10px;">
+            <thead>
+                <th>枝番</th>
+                <th>従業員名</th>
+                <th>作業コード</th>
+                <th>作業時間</th>
+            </thead>
+            <tbody>
+            {% for detail in data.trenum_details %}
+                <tr>
+                    <td>{{ detail.trenum }}</td>
+                    <td>{{ detail.employee.name }}</td>
+                    <td>{{ detail.work_code }}</td>
+                    <td>{{ detail.work_hours }}時間 {{ detail.work_minute }}分</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+    </div><br>
+{% endfor %}
+{% else %}
+<div class="wlog_c">
+    <h2 align="center">指定した日の作業伝票はありません。</h2>
+</div>
+{% endif %}
+
+{% endblock %}

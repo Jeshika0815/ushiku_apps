@@ -3,13 +3,35 @@
 {% block title %}作業伝票修正{% endblock %}
 
 {% block content %}
-<h1 class="titles">作業伝票修正</h1>
 <div class="subhead">
     <div>
     作業伝票修正　　
     </div>
 </div>
-<br><br><br>
+<br>
+<h3>工番・枝番早見表</h3>
+<div style="padding: 10px 5px; border-radius: 10px; background:rgb(223, 223, 223); width:300px; height:100px; overflow-y: scroll; ">
+{% if not work_orders %}
+    <h1>データがありません</h1>
+{% else %}
+<table border style="padding:10px;">
+<thead>
+    <th>工番</th>
+    <th>枝番</th>
+    <th>件名</th>
+</thead>
+<tbody>
+{% for order in work_orders %}
+<tr>
+    <td>{{ order.work_number }}</td>
+    <td>{{ order.work_trenum }} </td>
+    <td>{{ order.subject }}</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+{% endif %}
+</div><br>
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
@@ -19,4 +41,15 @@
             <button type="submit" class="sub_bt" style="padding:10px 20px;">登録</button>
         </div></div>
 </form>
+<script>
+    // フォーム内でEnterキーを押したときのデフォルト動作を無効化
+    document.querySelectorAll('form').forEach(form => {
+        form.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                // Enterキーが押された場合、デフォルトの送信動作を防ぐ
+                event.preventDefault();
+            }
+        });
+    });
+</script>
 {% endblock %}

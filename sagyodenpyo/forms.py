@@ -16,5 +16,6 @@ class WorkLogForm(forms.ModelForm):
         }
         widgets = {
             'date': forms.DateInput(attrs={'type': 'date'}),  # HTML5の日付入力ウィジェット
-            'work_minute': forms.NumberInput(attrs={'step': '5'}),
+            'work_hours': forms.NumberInput(attrs={'min':'0','max':'23'}),
+            'work_minute': forms.NumberInput(attrs={'step': '10', 'min':'0', 'max':'50'}),
         }
