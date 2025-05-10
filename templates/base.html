@@ -32,7 +32,7 @@
 
         <a href="/" class="hm"><img src="{% static 'ico/shirayama_app_mm.png' %}" class="h_icon" alt="HOME"><b>Ushiku</b></a>
         <a href="{% url 'sagyoshiji:work_order_list' %}"class="hm">作業指示票</a>
-        <a href="{% url 'sagyodenpyo:work_logs' %}" class="hm">作業履歴</a>     
+        <a href="{% url 'sagyodenpyo:work_logs' %}" class="hm">作業伝票</a>     
         </div>
         
         <div class="hsu printnot">
@@ -71,6 +71,7 @@
         <a href="{% url 'sagyoshiji:work_order_list' %}"class="hm">作業指示票</a>
         <a href="{% url 'sagyodenpyo:work_logs' %}" class="hm">作業履歴</a>  
     </div></div>
+    <script src="{% static 'scripts/focus.js' %}"></script>
     <noscript>
         <h1 align="center">Javascriptの設定を確認してください。</h1>
         <p>JavaScriptが無効なため本サイトにアクセスできません。</p>
