@@ -53,7 +53,7 @@ WorkOrderProgressFormSet = inlineformset_factory(
     WorkOrder, WorkOrderProgress,
     fields=('work_date', 'achievement', 'daily_result', ),
     widgets={
-        'work_date': forms.TextInput(attrs={'type': 'date'}),
+        'work_date': forms.TextInput(attrs={'type': 'date','class':'wop_width'}),
     },
     extra=12,  # 12個分のフォームを表示
     max_num=12,

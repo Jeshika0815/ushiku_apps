@@ -4,14 +4,20 @@
 
 {% block content %}
 <main class="printnot">
+    
     <div class="subhead">
         <div>
         作業指示票詳細　No.{{ work_order.work_order_number }}　
+        
         <a href="{% url 'sagyoshiji:edit_work_order' work_order.pk %}">修正・作業進捗登録</a>
+        {% if request.user.is_superuser %}
         <a href="{% url 'sagyoshiji:delete_work_order' work_order.pk %}">削除</a>
+        {% endif %}
         </div>
     </div><br><br>
-
+    <div class="printnot fullsc1" style="display:none; font-size: large; padding:5px 10px; background:silver; border-radius: 5px; width:200px;">
+        <span id="timespace"></span>
+    </div><br><br>
     <table style="margin: 0 auto;"border="1">
         <thead>
             <tr>
@@ -31,87 +37,71 @@
         </tbody>
     </table>
     <br>
-    <table style="margin: 0 auto;"border="1">
-        <tr>
-            <th>発行日</th>
-            <td>{{ work_order.release_date }}</td>
-        </tr>
-        <tr>
-            <th>工番</th>
-            <td>{{ work_order.work_number }}</td>
-        </tr>
-        <tr>
-            <th>枝番</th>
-            <td>{{ work_order.work_trenum }}</td>
-        </tr>
-        <tr>
-            <th>件名</th>
-            <td>{{ work_order.subject }}</td>
-        </tr>
-        <tr>
-            <th>製造工程パタン</th>
-            <td>{{ work_order.process_pattern }}</td>
-        </tr>
-        <tr>
-            <th>製造管理担当者</th>
-            <td>{{ work_order.manager }}</td>
-        </tr>
-        <tr>
-            <th>製作グループ</th>
-            <td>{{ work_order.work_group }}</td>
-        </tr>
-        <tr>
-            <th>作業工数時間</th>
-            <td>{{ work_order.work_hours }}</td>
-        </tr>
-        <tr>
-            <th>次工程</th>
-            <td>{{ work_order.next_process }}</td>
-        </tr>
-        <tr>
-            <th>作業開始日</th>
-            <td>{{ work_order.start_date }}</td>
-        </tr>
-        <tr>
-            <th>終了予定日</th>
-            <td>{{ work_order.end_date }}</td>
-        </tr>
-        </table>
-        <br>
-        <p style="font-weight: bold;">作業範囲・種別</p>
-        <div style="padding:5px 10px; width:300px; text-align: left; border:1px dashed rgb(74, 74, 74); border-radius:10px;">
-            {{ work_order.work_range }}
-            <br>
-            <h2 align="left">{{ work_order.work_type }}</h2>
+    <div align="center">
+        <h1 align="center" style="text-decoration: underline;">件名　{{ work_order.subject }}</h1>
+        <h2 style="text-decoration: underline;">工番-枝番　{{ work_order.work_number }} - {{ work_order.work_trenum }}</h2>
+        <h3 style="text-decoration: underline;">製作グループ　{{ work_order.work_group }}</h3>
+    </div>
+    <br>
+    <div style="display: flex; justify-content: center;">
+        <div style="margin:0; padding:10px;">
+    <table border>
+        <tr><td><b>製造工程パターン</b></td><td>{{ work_order.process_pattern }}</td></tr>
+        <tr><td><b>製造管理担当者</b></td><td>{{ work_order.manager }}</td></tr>
+        <tr><td><b>作業工数時間</b></td><td>{{ work_order.work_hours }}</td></tr>
+        <tr><td><b>次工程</b></td><td>{{ work_order.next_process }}</td></tr>
+        <tr><td><b>作業開始日</b></td><td>{{ work_order.start_date }}</td></tr>
+        <tr><td><b>作業終了日</b></td><td>{{ work_order.end_date }}</td></tr>
+    </table>
         </div>
-        <br>
-
-
-    <br><br>
-    <h3>計画数：{{ work_order.planed_value }} / 作業進捗率：{{ progress_rate }} %</h3>
-    <table style="margin: 0 auto;"border="1">
-        <tr>
-            <th>作業日</th>
-            {% for progress in progresses %}
-                <td>{{ progress.work_date }}</td>
-                {% empty %}
-                    <td>進捗データがありません。</td>
-            {% endfor %}
-        </tr>
-        <tr>
-            <th>当日実績</th>
-            {% for progress in progresses %}
-                <td>{{ progress.daily_result }}</td>
-                {% empty %}
-                    <td>進捗データがありません。</td>
-            {% endfor %}
-        </tr>
+        <div style="margin:0; padding: 10px;">
+            <div style="padding:5px 10px; width:auto; border:1px dashed rgb(74, 74, 74); border-radius:10px;">
+                <p align="left" style="margin:0; font-weight: bold;">作業範囲</p><br>
+                {{ work_order.work_range }}
+                <br>
+                <h2 align="left">{{ work_order.work_type }}</h2>
+            </div>
+            <h3 align="left">計画本数：{{ work_order.planed_value }} / 作業進捗率：{{ work_order.progress_rate }}%</h3>
+        </div>
+    </div>
+    
+    <br>
+    <table style="margin: 0 auto; white-space: nowrap;  overflow-x: auto;"cellspacing="0" cellpadding="5"border="1">
+            <tr>
+                <th>作業日</th>
+                {% for progress in work_orders %}
+                    <td>{{ progress.work_date }}</td>
+                    {% empty %}
+                        <td>進捗データがありません。</td>
+                {% endfor %}
+            </tr>
+            <tr>
+                <th>出来高（％）</th>
+                {% for progress in work_orders %}
+                    <td>{{ progress.achievement }}</td>
+                    {% empty %}
+                        <td>進捗データがありません。</td>
+                {% endfor %}
+            </tr>
+            <tr>
+                <th>当日実績</th>
+                {% for progress in work_orders %}
+                    <td>{{ progress.daily_result }}</td>
+                    {% empty %}
+                        <td>進捗データがありません。</td>
+                {% endfor %}
+            </tr>
     </table>
 <br><br>
+<div class="printnot fullsc2" style="display:none;">
+    <button id="wfinish"  onclick="location.reload();">全画面終了</button><br><br>
+</div>
 <div class="f_el"><div align="right">
-    <a href="#" onclick="window.print(); return false;" class="printnot sub_bt">印刷</a>　
-    <a href="#" onclick="history.back();" class="sub_bt printnot">戻る</a>
+    <button class="sub_bt printnot" id="wstart">全画面</button>　
+    <button  onclick="window.print(); return false;" class="printnot sub_bt">印刷</button>　
+    <button onclick="history.back();" class="sub_bt printnot">戻る</button>
 </div></div>
+
 </main>
 <div class="print_format" style="zoom:0.9;">
     <div align="right">
@@ -155,18 +145,19 @@
         </div>
         <div style="margin:0;">
             <div style="padding:5px 10px; width:auto; border:1px dashed rgb(74, 74, 74); border-radius:10px;">
-                {{ work_order.work_range }}
+                <p align="left" style="margin:0; font-weight: bold;">作業範囲</p><br>
+                    {{ work_order.work_range }}
                 <br>
                 <h2 align="left">{{ work_order.work_type }}</h2>
             </div>
         </div>
     </div>
-    <h3 align="left">計画本数：{{ work_order.planed_value }} / 作業進捗率：{{ work_order.progress_rate }}</h3>
+    <h3 align="left">計画本数：{{ work_order.planed_value }} / 作業進捗率：{{ work_order.progress_rate }}%</h3>
     <br>
     <table style="margin: 0 auto; white-space: nowrap;  overflow-x: auto;"cellspacing="0" cellpadding="5"border="1">
             <tr>
                 <th>作業日</th>
-                {% for progress in progresses %}
+                {% for progress in work_orders %}
                     <td>{{ progress.work_date }}</td>
                     {% empty %}
                         <td>進捗データがありません。</td>
@@ -174,11 +165,15 @@
             </tr>
             <tr>
                 <th>出来高（％）</th>
-                <td></td>
+                {% for progress in work_orders %}
+                    <td>{{ progress.achievement }}</td>
+                    {% empty %}
+                        <td>進捗データがありません。</td>
+                {% endfor %}
             </tr>
             <tr>
                 <th>当日実績</th>
-                {% for progress in progresses %}
+                {% for progress in work_orders %}
                     <td>{{ progress.daily_result }}</td>
                     {% empty %}
                         <td>進捗データがありません。</td>
