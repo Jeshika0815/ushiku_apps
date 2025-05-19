@@ -5,6 +5,7 @@ from django.http import HttpResponse
 from django.db import transaction
 from collections import defaultdict
 import csv
+import datetime
 from .forms import WorkOrderForm, WorkOrderProgressFormSet
 from .models import WorkOrder, WorkOrderProgress
 from django.db.models import Sum
@@ -13,7 +14,7 @@ from django.db.models import Sum
 # view the 作業指示票一覧
 @login_required
 def work_order_list(request):
-    work_orders = WorkOrder.objects.all()
+    work_orders = WorkOrder.objects.all().order_by('-release_date')
     w_psum = wprogress_all()
     for order in work_orders:
         order.progress_rate = w_psum.get(order.id,0)
@@ -96,8 +97,9 @@ def work_order_detail(request, pk):
 @login_required
 def export_sagyoshijihyo_csv(request):
     # CSVレスポンス設定
+    ufilename = request.GET.get('filename', f"作業指示票-{datetime.datetime.now().strftime('%Y%m%d')}.csv")
     response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename="sagyoshijihyo.csv"'
+    response['Content-Disposition'] = f'attachment; filename="{ufilename}"'
 
     # Shift-JIS エンコーディング
     response.write(u'\ufeff'.encode('utf-8-sig'))  # BOM追加（Excel対応）
@@ -153,7 +155,7 @@ def export_workorderprogress_csv(request):
         ])
     """
     response = HttpResponse(content_type='text/csv; charset=shift_jis')
-    response['Content-Disposition'] = 'attachment; filename="work_order_progress.csv"'
+    response['Content-Disposition'] = 'attachment; filename="全体の作業指示票.csv"'
 
     writer = csv.writer(response, quoting=csv.QUOTE_MINIMAL)
 
@@ -187,9 +189,9 @@ def calc_prate(work_order_id):
                 # 作業進捗率を計算
                 if planed_value > 0:
                     progress_rate = (progress.daily_result / planed_value) * 100
-                    if progress.achievement != round(progress_rate, 2):
-                        progress.achievement = round(progress_rate, 2)
-                        print(f"¡ progress :{progress} !")
+                    rounded_rate = round(progress_rate, 2)
+                    if progress.achievement != rounded_rate:
+                        progress.achievement = rounded_rate
                         progress.save()
                 else:
                     if progress.achievement != 0:
@@ -207,6 +209,6 @@ def wprogress_all():
     for progress in progress_all:
         worder_id = progress['work_order_id']
         total_pall = float(progress['total_pall'] or 0)
-        progress_totals[worder_id] += total_pall
+        progress_totals[worder_id] += round(total_pall, 2)
     
     return dict(progress_totals)

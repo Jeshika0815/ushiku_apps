@@ -15,7 +15,7 @@
         {% endif %}
         </div>
     </div><br><br>
-    <div class="printnot fullsc1" style="display:none; font-size: large; padding:5px 10px; background:silver; border-radius: 5px; width:200px;">
+    <div class="printnot fullsc1" >
         <span id="timespace"></span>
     </div><br><br>
     <table style="margin: 0 auto;"border="1">
@@ -92,10 +92,11 @@
                 {% endfor %}
             </tr>
     </table>
+    <div class="printnot fullsc2">
+        <button id="wfinish"  onclick="location.reload();">全画面終了</button><br><br>
+    </div>
 <br><br>
-<div class="printnot fullsc2" style="display:none;">
-    <button id="wfinish"  onclick="location.reload();">全画面終了</button><br><br>
-</div>
+
 <div class="f_el"><div align="right">
     <button class="sub_bt printnot" id="wstart">全画面</button>　
     <button  onclick="window.print(); return false;" class="printnot sub_bt">印刷</button>　
