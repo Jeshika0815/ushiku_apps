@@ -41,7 +41,7 @@
             <a href="{% url 'docs:app_docs' %}" class="hm"><img src="{% static 'svgs/question.svg' %}" class="h_icon" alt="ヘルプ"></a>
 
         {% if user.is_authenticated %}
-        <span style="color:rgb(75, 75, 75); font-size: large; border: 1px solid dimgray; border-radius: 5px; padding:10px 5px;"><img src="{% static 'svgs/user.svg' %}" class="h_icon"> {{ user.id|stringformat:"03d" }} : {{ user.first_name }} {{ user.last_name }} </span>　
+        <span class="userbox"><img src="{% static 'svgs/user.svg' %}" class="h_icon"> {{ user.id|stringformat:"03d" }} : {{ user.first_name }} {{ user.last_name }} </span>　
         <form action="{% url 'logout' %}" method="post" style="display:inline;">
             {% csrf_token %}
             <button type="submit" onclick="return confirm('ログアウトしてもよろしいですか？');">ログアウト</button>
