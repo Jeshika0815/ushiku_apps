@@ -87,9 +87,10 @@ def log_totals(request):
     
     return render(request , 'sagyodenpyo/view_totals.html', context)
 
+# 作業伝票登録
 @login_required
 def log_work(request):
-    work_orders = WorkOrder.objects.all()
+    work_orders = WorkOrder.objects.all().order_by('-release_date')
     if request.method == "POST":
         form = WorkLogForm(request.POST)
         if form.is_valid():
@@ -101,9 +102,10 @@ def log_work(request):
         form = WorkLogForm()
     return render(request, 'sagyodenpyo/log_work.html', {'form': form, 'work_orders':work_orders})
 
+# 作業伝票修正
 @login_required
 def edit_work_log(request, pk):
-    work_orders = WorkOrder.objects.all()
+    work_orders = WorkOrder.objects.all().order_by('-release_date')
     work_log = get_object_or_404(WorkLog, pk=pk, employee=request.user.employee)
     if request.method == "POST":
         form = WorkLogForm(request.POST, instance=work_log)
@@ -117,6 +119,7 @@ def edit_work_log(request, pk):
 
 from django.http import HttpResponseForbidden
 
+# 作業履歴一覧(不使用)
 @login_required
 def work_log_list(request):
     try:
@@ -127,7 +130,7 @@ def work_log_list(request):
     work_logs = WorkLog.objects.filter(employee=employee).order_by('-date')
     return render(request, 'sagyodenpyo/work_log_list.html', {'work_logs': work_logs})
 
-# 全員の作業履歴を取得し、日付ごとにグループ化してテンプレートに渡すビュー
+# 全員の作業履歴を取得し、日付ごとにグループ化してテンプレートに渡すビュー(不使用)
 @login_required
 def all_work_logs_by_date(request):
     # 全ての作業履歴を日付順に取得
@@ -188,11 +191,43 @@ def export_work_logs_csv(request):
 
     return response
 
-# other functions
+#個人の作業履歴の出力
+"""
+@login_required
+def export_personal_work_logs_csv(request):
+    work_logs = WorkLog.objects.filter(employee=emproyee).order_by('-date')
 
-# 個人の履歴周り
-def p_work_logs():
-    pass
+    filename = f"{request.user.name}の作業伝票.csv"
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Dispostion'] = 'attachment; filename = filenname'
+        # Shift-JIS でエンコードされた CSV データを生成
+    writer = csv.writer(response, quoting=csv.QUOTE_MINIMAL)
+
+    # ヘッダー行（日本語）
+    header = ['従業員名', '工番', '枝番', '件名', '作業コード', '作業時間(時間)', '作業時間(分)', '作業日']
+    response.write(",".join(header).encode('shift_jis') + b"\r\n")
+
+    # データ行
+    for log in work_logs:
+        row = [
+            str(items)
+
+            for items in [
+            log.work_number,
+            log.work_trenum,
+            log.subject,
+            log.work_code,
+            log.work_hours,
+            log.work_minute,
+            log.date.strftime("%Y-%m-%d")
+            ]
+        ]
+        response.write(",".join(row).encode('shift_jis') + b"\r\n")
+
+    return response
+"""
+
+# other functions
 
 # 個人の作業時間計算周り
 def calc_p_wlogs(work_logs):
@@ -237,11 +272,12 @@ def totaling(target_date):
         onum_summary[onum]['total_minute'] += log.work_minute
         onum_summary[onum]['trenum_details'].append(trenum_details)
         onum_summary[onum]['trenum_group'].add(log.work_trenum)
-        #onum_summary[onum]['subject'].add(log.subject)
+        onum_summary[onum]['subject'].add(log.subject)
 
     # 必要に応じてセットをリストに変換
     for onum, summary in onum_summary.items():
         summary['trenum_group'] = list(summary['trenum_group'])
+        summary['subject'] = ', '.join(summary['subject'])
         #summary['subject'] = list(summary['subject'])
 
         

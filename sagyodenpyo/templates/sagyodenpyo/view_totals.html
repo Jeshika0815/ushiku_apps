@@ -14,7 +14,7 @@
     
     </div>
     <div>
-        期間内に存在する日数：<b>{{ count_logss }}日</b>
+        存在する件数：<b>{{ count_logss }}件</b>
     </div>
 </div>
 <br><br><br>
@@ -23,16 +23,16 @@
     <input type="date" name="date" id="date" value="{{ selected_date|date:'Y-m-d' }}">
     <button type="submit">集計する</button>
 </form>
-
-
-
-<h2>{{ selected_date|date:'Y年m月d日' }}の総作業時間: {{ total_hours }} 時間 {{ total_minute }}分</h2>
-
+<br>
+<div class="alert alert-info mt-3 spmin_h1">
+{{ selected_date|date:'Y年m月d日' }}の総作業時間: {{ total_hours }} 時間 {{ total_minute }}分
+</div>
+<br>
 {% if count_logss > 0 %}
 {% for kouban, data in order_summary.items %}
     <div class="wlog_c">
     <h2>工番: {{ kouban }}（合計: {{ data.total_hours }} 時間 {{ data.total_minute }}分）</h2>
-
+    <h3>件名： {{ data.subject }}</h3>
         <table border style="margin:10px;">
             <thead>
                 <th>枝番</th>

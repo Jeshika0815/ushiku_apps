@@ -13,4 +13,5 @@ urlpatterns = [
     path('all-logs/', views.all_logs, name='all-logs'),
     path('all_logs_by_date/', views.all_work_logs_by_date, name='all_work_logs_by_date'),  # 新しいURL
     path('export_csv/', views.export_work_logs_csv, name='export_work_logs_csv'),  # CSVダウンロード用URL
+    
 ]

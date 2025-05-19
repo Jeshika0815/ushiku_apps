@@ -29,7 +29,6 @@
         <th>件名</th>
         <th>作業コード</th>
         <th>作業時間</th>
-        <th>分</th>
     </tr>
     </thead>
     <tbody>
@@ -42,8 +41,7 @@
             <td>{{ logs.work_trenum }}</td>
             <td>{{ logs.subject }}</td>
             <td>{{ logs.get_work_code_display }}</td>
-            <td>{{ logs.work_hours }}</td>
-            <td>{{ logs.work_minute }}</td>
+            <td>{{ logs.work_hours }}時間{{ logs.work_minute }}分</td>
         </tr>
 {% empty %}
         <tr><td colspan="6">作業伝票はありません。</td></tr>

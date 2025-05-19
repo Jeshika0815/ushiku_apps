@@ -30,7 +30,7 @@
             <button type="submit">表示</button>
         </form>
 
-        <div class="alert alert-info mt-3" style="text-decoration: underline; font-size: x-large;">
+        <div class="alert alert-info mt-3 spmin_h1">
             <strong>{{ start_date|date:"m月 d日" }} から１週間分の作業合計:</strong>
             {{ total_hours }} 時間 {{ remining_minutes }} 分
         </div>
@@ -64,7 +64,7 @@
                         <td>{{ log.get_work_code_display }}</td>
                         <td>{{ log.work_hours }}</td>
                         <td>{{ log.work_minute }}</td>
-                        <td><a href="{% url 'sagyodenpyo:edit_work_log' log.pk %}">編集</a></td>
+                        <td><a href="{% url 'sagyodenpyo:edit_work_log' log.pk %}">&#9998;</a></td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -103,7 +103,7 @@
                         <td>{{ logs.get_work_code_display }}</td>
                         <td>{{ logs.work_hours }}</td>
                         <td>{{ logs.work_minute }}</td>
-                        <td><a href="{% url 'sagyodenpyo:edit_work_log' logs.pk %}">編集</a></td>
+                        <td><a href="{% url 'sagyodenpyo:edit_work_log' logs.pk %}">&#9998;</a></td>
                     </tr>
                     {% endfor %}
                 </tbody>
