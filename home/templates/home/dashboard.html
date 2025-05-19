@@ -23,12 +23,12 @@
 {% else %}
     <div class="s_container">
         {% for order in work_orders %}
+        <a href="{% url 'sagyoshiji:work_order_detail' order.pk %}" class="card_anker">
             <div class="card act_card">
                 <p align="left" style="font-size: small;">作業指示表番号：{{ order.work_order_number }}　工番：{{ order.work_number }}　枝番：{{ order.work_trenum }} </p>
                 <h3>件名：{{ order.subject }}</h3>
                 <p style="font-size: small;">作業開始日：{{ order.start_date }}　作業終了日：{{ order.end_date }}</p>
-                <a href="{% url 'sagyoshiji:work_order_detail' order.pk %}" class="sub_bt">詳細を見る</a>
-                <br><br>
+                <br>
                 
                 <h4 style="margin: 0;">作業進捗率</h4>
                 <p style="margin:0;">進捗率： {{ order.progress_rate }} %</p>
@@ -57,8 +57,8 @@
                             color: white;
                         }
                     </style>
-                </p>
-            </div>
+                 
+            </div></a>
         {% endfor %}
     </div><br>
     {% if work_order_count > 1 %}
@@ -105,6 +105,7 @@
         cards.forEach((card, i) => {
             card.classList.remove('act_card');
             card.style.left = (i === index) ? '0' : '100%';
+            card.style.pointerEvents = (i === index)? 'auto' : 'none';
         });
         cards[index].classList.add('act_card');
         showpage.innerHTML = (index + 1) + '/' + total_cards;
