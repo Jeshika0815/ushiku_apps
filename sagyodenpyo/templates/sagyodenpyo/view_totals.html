@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}作業伝票集計{% endblock %}
+{% block title %}作業伝票集計 - Ushiku{% endblock %}
 
 {% block content %}
 <div class="subhead">
@@ -9,7 +9,7 @@
     <a href="{% url 'sagyodenpyo:log_work' %}">新規作成</a>
     <a href="{% url 'sagyodenpyo:work_logs' %}">個人の履歴</a>
     <a href="{% url 'sagyodenpyo:all-logs' %}">全体の履歴</a>
-    <a href="{% url 'sagyodenpyo:export_work_logs_csv' %}">全体の作業履歴ダウンロード</a>
+    <a href="{% url 'sagyodenpyo:export_work_logs_csv' %}">伝票全体出力</a>
     
     
     </div>

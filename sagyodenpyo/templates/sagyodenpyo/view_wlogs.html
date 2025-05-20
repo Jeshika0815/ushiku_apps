@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}作業履歴{% endblock %}
+{% block title %}作業履歴 - Ushiku{% endblock %}
 
 {% block content %}
 <div class="subhead">
@@ -11,6 +11,7 @@
     {% if request.user.is_superuser %}
     <a href="{% url 'sagyodenpyo:all-logs' %}">全体の伝票</a>
     <a href="{% url 'sagyodenpyo:totals' %}">集計</a>
+    <a href="{% url 'sagyodenpyo:export_personal_work_logs_csv' %}">個人伝票出力</a>
     
     
     {% endif %}

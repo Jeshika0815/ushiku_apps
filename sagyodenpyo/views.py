@@ -159,9 +159,12 @@ from .models import WorkLog
 
 @login_required
 def export_work_logs_csv(request):
-    # Shift-JIS 対応のレスポンス設定
-    response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename="work_logs.csv"'
+    from urllib.parse import quote
+    # CSVレスポンス設定
+    filename = f"全体の作業伝票 - {datetime.datetime.now().strftime("%Y%m%d")}.csv"
+    encoded_fname = quote(filename)
+    response = HttpResponse(content_type='text/csv; charset=shift_jis')
+    response['Content-Disposition'] = f'attachment; filename*=UTF-8\'\'{encoded_fname}'
 
     # Shift-JIS でエンコードされた CSV データを生成
     writer = csv.writer(response, quoting=csv.QUOTE_MINIMAL)
@@ -192,14 +195,16 @@ def export_work_logs_csv(request):
     return response
 
 #個人の作業履歴の出力
-"""
+
 @login_required
 def export_personal_work_logs_csv(request):
-    work_logs = WorkLog.objects.filter(employee=emproyee).order_by('-date')
+    from urllib.parse import quote
+    work_logs = WorkLog.objects.filter(employee=employee).order_by('-date')
 
-    filename = f"{request.user.name}の作業伝票.csv"
+    filename = f"{request.user.name}の作業伝票 - {datetime.datetime.now().strftime('%Y%m%d')}.csv"
+    encoded_fname = quote(filename)
     response = HttpResponse(content_type='text/csv')
-    response['Content-Dispostion'] = 'attachment; filename = filenname'
+    response['Content-Dispostion'] = f'attachment; filename*=UTF-8\'\'{encoded_fname}'
         # Shift-JIS でエンコードされた CSV データを生成
     writer = csv.writer(response, quoting=csv.QUOTE_MINIMAL)
 
@@ -225,7 +230,7 @@ def export_personal_work_logs_csv(request):
         response.write(",".join(row).encode('shift_jis') + b"\r\n")
 
     return response
-"""
+
 
 # other functions
 
