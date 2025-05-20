@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}作業指示票{% endblock %}
+{% block title %}作業指示票 - Ushiku{% endblock %}
 
 {% block content %}
 
@@ -10,8 +10,8 @@
     {% if request.user.is_superuser %}
     <a href="{% url 'sagyoshiji:register_work_order' %}">新規作成</a>
     {% if work_orders %}
-    <a href="{% url 'sagyoshiji:export_sagyoshijihyo_csv' %}" >作業指示票ダウンロード</a>
-    <a href="{% url 'sagyoshiji:export_workorderprogress_csv' %}" >進捗データダウンロード</a>
+    <a href="{% url 'sagyoshiji:export_sagyoshijihyo_csv' %}" >指示票出力</a>
+    <a href="{% url 'sagyoshiji:export_workorderprogress_csv' %}" >進捗出力</a>
     {% endif %}{% endif %}
     </div>
     <div class="true_dsp" style="text-align: center;">

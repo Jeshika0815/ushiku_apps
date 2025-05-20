@@ -96,10 +96,12 @@ def work_order_detail(request, pk):
 
 @login_required
 def export_sagyoshijihyo_csv(request):
+    from urllib.parse import quote
     # CSVレスポンス設定
-    ufilename = request.GET.get('filename', f"作業指示票-{datetime.datetime.now().strftime('%Y%m%d')}.csv")
+    filename = f"作業指示票 - {datetime.datetime.now().strftime('%Y%m%d')}.csv"
+    encoded_fname = quote(filename) # URL encode
     response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = f'attachment; filename="{ufilename}"'
+    response['Content-Disposition'] = f'attachment; filename*=UTF-8\'\'{encoded_fname}'
 
     # Shift-JIS エンコーディング
     response.write(u'\ufeff'.encode('utf-8-sig'))  # BOM追加（Excel対応）
@@ -130,32 +132,12 @@ def export_sagyoshijihyo_csv(request):
 
 @login_required
 def export_workorderprogress_csv(request):
+    from urllib.parse import quote
     # CSVレスポンス設定
-    """
-    response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename="work_order_progress.csv"'
-
-    # CSVライターを作成
-    writer = csv.writer(response, quoting=csv.QUOTE_MINIMAL)
-
-    # ヘッダー行を記述
-    writer.writerow([
-        '進捗ID', '作業指示票番号', '作業日', '出来高（％）', '当日実績'
-    ])
-
-    # WorkOrderProgress の全データを取得してCSVに書き込む
-    progress_list = WorkOrderProgress.objects.select_related('work_order').all()
-    for progress in progress_list:
-        writer.writerow([
-            progress.id,
-            progress.work_order.work_order_number if progress.work_order else 'なし',
-            progress.work_date.strftime('%Y-%m-%d'),
-            progress.achievement,
-            progress.daily_result,
-        ])
-    """
+    filename = f"全体の作業進捗 - {datetime.datetime.now().strftime("%Y%m%d")}.csv"
+    encoded_fname = quote(filename)
     response = HttpResponse(content_type='text/csv; charset=shift_jis')
-    response['Content-Disposition'] = 'attachment; filename="全体の作業指示票.csv"'
+    response['Content-Disposition'] = f'attachment; filename*=UTF-8\'\'{encoded_fname}'
 
     writer = csv.writer(response, quoting=csv.QUOTE_MINIMAL)
 
