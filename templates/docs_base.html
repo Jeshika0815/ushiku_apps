@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#ffffff">
-    <title>{% block title %}作業データ管理システム{% endblock %}</title>
+    <title>{% block title %}Ushiku Docs{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link rel="shortcut icon" href="{% static 'ico/shirayama_app_mm.png' %}" >
     <link rel="manifest" href="{% static 'pwa/manifest.json' %}">
@@ -41,7 +41,7 @@
             <a href="{% url 'docs:app_docs' %}" class="hm"><img src="{% static 'svgs/question.svg' %}" class="h_icon" alt="ヘルプ"></a>
 
         {% if user.is_authenticated %}
-        <span class="userbox"><img src="{% static 'svgs/user.svg' %}" class="h_icon"> {{ user.id|stringformat:"03d" }} : {{ user.first_name }} {{ user.last_name }} </span>　
+        <a href="{% url 'home:user_profile' %}" style="text-decoration: none;"><span class="userbox"><img src="{% static 'svgs/user.svg' %}" class="h_icon"> {{ user.id|stringformat:"03d" }} : {{ user.first_name }} {{ user.last_name }} </span></a>　
         <form action="{% url 'logout' %}" method="post" style="display:inline;">
             {% csrf_token %}
             <button type="submit" onclick="return confirm('ログアウトしてもよろしいですか？');">ログアウト</button>
@@ -55,6 +55,15 @@
     {% if request.user.is_superuser %}
     <a href="{% url 'admin:index' %}" class="hm" onclick="return alert('管理画面に移動します。');">アカウント管理</a>　
     {% endif %}
+    </div>
+    <div class="hsu printnot hsonl">
+        <img src="{% static 'ico/shirayama_app_mm.png' %}" class="h_icon" alt="HOME"><b style="font-size: large;">Ushiku</b>
+    </div>
+    <div class="hsu printnot hsonl">
+        {% if request.user.is_superuser %}
+        <a href="{% url 'admin:index' %}" class="hm" onclick="return alert('管理画面に移動します。');">アカウント管理</a>　
+        {% endif %}
+        <a href="{% url 'docs:app_docs' %}" class="hm"><img src="{% static 'svgs/question.svg' %}" class="h_icon" alt="ヘルプ"></a>
     </div>
     </header>
     <br><br><br>
@@ -82,6 +91,13 @@
         </div>
         </div>
     </main>
+    <div class="menus"><div align="center">
+        <a href="/" class="hm"><img src="{% static 'svgs/home.svg' %}" class="h_icon" alt="HOME"></a>
+        <a href="{% url 'sagyoshiji:work_order_list' %}"class="hm">作業指示票</a>
+        <a href="{% url 'sagyodenpyo:work_logs' %}" class="hm">作業履歴</a>  
+        <a href="{% url 'home:user_profile' %}" style="text-decoration: none;"><span class="userbox"><img src="{% static 'svgs/user.svg' %}" class="h_icon" style="border: 1px solid dimgray; border-radius: 10px; padding:3px 5px;"></span></a>　
+
+    </div></div>
     <noscript>
         <h1 align="center">Javascriptの設定を確認してください。</h1>
         <p>JavaScriptが無効なため本サイトにアクセスできません。</p>
