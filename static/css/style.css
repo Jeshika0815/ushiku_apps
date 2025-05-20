@@ -18,9 +18,10 @@ body.fullscreen{background:var(--base_color);}
 header{width:auto; background:var(--shir_color); padding:5px; padding-bottom: 10px; font-size: medium; display:flex; justify-content: space-between; align-items: center; position: fixed; top:0; left:0; right:0; z-index: 1000;}
 header button{border:none; font-size: medium; background:none; border-radius: 5px; padding:3px 7px; color: rgb(75, 75, 75); justify-content: space-between;}
 header button:hover{background:#c5f0ff;}
-header .hm{border:none; font-size: medium; text-decoration: none; background:none; border-radius: 5px; padding:4px 7px; color: rgb(75, 75, 75); justify-content: space-between;}
+header .hm{border:none; font-size: medium; text-decoration: none; background:none; border-radius: 5px; padding:4px 7px; padding-bottom: 5px; color: rgb(75, 75, 75); justify-content: space-between;}
 header .hm:hover{background:#c5f0ff;}
 header .hsu{padding: 0px;}
+header .hsonl{display:none;}
 header .hsel{display:block;} header .hsponly{display:none;}
 header .userbox{padding:5px 5px; border: 1px solid dimgray; font-size: medium; color:rgb(75, 75, 75); border-radius: 5px;}
 
@@ -209,6 +210,7 @@ body{font-size:medium;}
 header{font-size:xx-small; position:fixed; top:0;}
 header button{font-size: small;} header .hm{font-size: small;}
 header .hsel{display:none;}
+header .hsonl{display:block;} header .hsponly{display:block;}
 /* Header icon */
 .h_icon {
     width: 25px;
