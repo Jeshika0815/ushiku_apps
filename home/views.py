@@ -33,3 +33,11 @@ def home(request):
     work_order_count = work_orders.count()
     return render(request, 'home/dashboard.html', {'work_orders': work_orders, 'work_order_count':work_order_count,'work_progress': w_psum})
 
+@login_required
+def user_profile(request):
+    try:
+        employee = request.user.employee
+    except employee.DoesNotExist:
+        return HttpResponseForbidden('このユーザーには対応する従業員情報がありません。管理者に問い合わせてください。')
+    wlog = WorkLog.objects.filter(employee=employee).order_by('-date')
+    return render(request, 'home/users.html',{'work_log':wlog})
