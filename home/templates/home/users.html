@@ -1,9 +1,10 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}ユーザ - Ushiku{% endblock %}
+{% block title %}{{ user.first_name }} {{ user.last_name }} - Ushiku{% endblock %}
 
 {% block content %}
-<h1 align="left" style="padding:3px 20px;"><img src="{% static 'svgs/user.svg' %}" style="width:20px; height:20px; border:1px solid dimgray; padding:5px 10px; border-radius: 5px;"> <span >{{ user.first_name }} {{ user.last_name }} </span>　<span style="color:gray;">{{ user.id|stringformat:"03d" }}</span></h1>
+<h2 align="left" style="padding:3px 10px;"><img src="{% static 'svgs/user.svg' %}" style="width:20px; height:20px; border:1px solid dimgray; padding:5px 10px; border-radius: 5px;"> <span >{{ user.first_name }} {{ user.last_name }} </span>　<span style="color:gray;">{{ user.username }}</span></h2>
+<p align="left" style="padding-left:1%;"><a href="mailto:{{ user.email }}" style=" color:gray;">{{ user.email }}</a></p>
 <div align="left" style="padding:5px 10px;">
 <form action="{% url 'logout' %}" method="post" style="display:inline;">
     {% csrf_token %}
@@ -12,36 +13,29 @@
 </div>
 
 <hr style="border:1px solid silver; width:70%;">
+<h3>ユーザーの詳細情報</h3>
+<div style="width:300px; text-align: left; border-radius: 5px; background:#68c5ff; padding:5px 10px;">
+<p>社員ID：{{ user.username }}</p>
+<p>社員番号：{{ user.id|stringformat:"03d" }}</p>
+<p>社員氏名：{{ user.first_name }} {{ user.last_name }}</p>
+<p>
+    部類：
+    {% if user.is_superuser %}
+    <span style="border:2px solid gold; border-radius: 5px;">管理者</span>
+    {% elif user.is_staff %}
+    <span style="border:2px solid silver; border-radius: 5px;">事務方</span>
+    {% else %}
+    <span style="border:2px solid black; border-radius: 5px;">一般社員</span>
+    {% endif %}
+</p>
+<p>所属グループ：{{ user.groups.all|join:", " }}</p>
+<p>メールアドレス：<a href="mailto:{{ user.email }}">{{ user.email }}</a></p>
+<p>登録日：{{ user.date_joined|date:"Y年m月d日" }}</p>
+<p>最終ログイン：{{ user.last_login|date:"Y年m月d日 H:i:s" }}</p>
+<!--p>権限：{{ user.get_all_permissions|join:", " }}</p-->
+</div>
+
 <h3>作業伝票</h3>
-<!--a href="{% url 'sagyodenpyo:work_logs' %}">個人の伝票をCSVでエクスポート</a><br--><br>
-            <table style="margin: 0 auto;"border="1">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>作業日</th>
-                        <th>工番</th>
-                        <th>枝番</th>
-                        <th>件名</th>
-                        <th>作業コード</th>
-                        <th>作業時間</th>
-                        <th>分</th>
-                        <th>編集</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for logs in work_log %}
-                    <tr>
-                        <td>{{ logs.id }}</td>
-                        <td>{{ logs.date }}</td>
-                        <td>{{ logs.work_number }}</td>
-                        <td>{{ logs.work_trenum }}</td>
-                        <td>{{ logs.subject }}</td>
-                        <td>{{ logs.get_work_code_display }}</td>
-                        <td>{{ logs.work_hours }}</td>
-                        <td>{{ logs.work_minute }}</td>
-                        <td><a href="{% url 'sagyodenpyo:edit_work_log' logs.pk %}">&#9998;</a></td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table><br><br>
+<a href="{% url 'sagyodenpyo:work_logs' %}">個人の作業伝票を確認する</a>
+ <br><br><br>
 {% endblock %}
