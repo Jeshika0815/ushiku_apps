@@ -127,6 +127,11 @@ input[type="text"], input[type="date"], input[type="time"], input[type="number"]
 .subhead a:hover{background: /*rgb(196, 239, 255)*/rgb(214, 214, 214);}
 .subhead .ank{text-decoration: none; color:/*rgb(0,76,143)*/black; font-size: smaller; padding:5px 10px; border-radius: 5px;}
 .subhead .ank:hover{background: /*rgb(196, 239, 255)*/rgb(214, 214, 214);}
+.subhead_sp{display: none;}
+.subhead_sp a{text-decoration: none; color:/*rgb(0,76,143)*/black; font-size: small; padding:5px 3px; border-radius: 5px;}
+.subhead_sp a:hover{background: /*rgb(196, 239, 255)*/rgb(214, 214, 214);}
+.subhead_sp .ank{text-decoration: none; color:/*rgb(0,76,143)*/black; font-size: small; padding:5px 3px; border-radius: 5px;}
+.subhead_sp .ank:hover{background: /*rgb(196, 239, 255)*/rgb(214, 214, 214);}
     
 /* work order list */
 .wo_list{padding:5px 10px; width:50%; border-radius: 10px; padding-bottom:10px;   background: linear-gradient(135deg, #7ed0ff, #75aaff);} 
@@ -221,6 +226,7 @@ header .hsonl{display:block;} header .hsponly{display:block;}
 .f_el{position: static; background:none; background: silver;}
 /* ribon */
 .subhead{display:none; z-index: 900; justify-content: space-between; color:/*rgb(0, 67, 143)*/black; position: fixed; margin-top: var(--pc_header_height); top:0; left:0; right:0; text-align: left; background:/*rgb(111, 183, 255)*/whitesmoke; border-bottom:1px solid rgb(0, 141, 197); padding:22px 20px 7px 20px; font-size: large;}
+.subhead_sp{display:flex; z-index: 900; justify-content: space-between; color:/*rgb(0, 67, 143)*/black; position: fixed; margin-top: var(--pc_header_height); top:0; left:0; right:0; text-align: left; background:/*rgb(111, 183, 255)*/whitesmoke; border-bottom:1px solid rgb(0, 141, 197); padding:22px 20px 7px 20px; font-size: small;}
 
 .form_former{display:block;}
 .form_formera{width:100%; text-align: center;} .titles{text-align: center;}
@@ -231,8 +237,8 @@ header .hsonl{display:block;} header .hsponly{display:block;}
 .wo_list_sp:hover{  transform: scale(1.0); box-shadow: 0 6px 15px rgba(118, 161, 255, 0.5);} .wo_list{display:none}
 
 /* sp only function */
-.menus{display:block; position: fixed; border-top:1px solid gray; bottom:0; left:0; right:0; padding:5px 10px; padding-bottom: 15px; background:var(--shir_color); }
-.menus .hm{border:none; font-size: large; text-decoration: none; background:none; border-radius: 5px; padding:5px 10px; color: rgb(75, 75, 75); justify-content: space-between;}
+.menus{display:block; position: fixed; border-top:1px solid gray; bottom:0; left:0; right:0; padding:1px 10px; padding-bottom: 10px; background:var(--shir_color); }
+.menus .hm{border:none; font-size: medium; text-decoration: none; background:none; border-radius: 5px; padding:3px 15px; color: rgb(75, 75, 75); justify-content: space-between;}
 .menus .hm:hover{background:#c5f0ff;}
 
 /* work log */
