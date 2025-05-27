@@ -3,6 +3,12 @@
 {% block title %}作業指示票 - Ushiku{% endblock %}
 
 {% block content %}
+<style>
+    .count_bs{display:none;}
+    @media screen and (max-width: 450px){
+        .count_bs{display:block;}
+    }
+</style>
 
 <div class="subhead">
     <div class="none_sp">
@@ -27,6 +33,17 @@
         作業指示票総数：{{ wo_count }}
     </div>
 </div>
+<div class="subhead_sp">
+    <div>
+    作業指示票一覧　　
+    {% if request.user.is_superuser %}
+    <a href="{% url 'sagyoshiji:register_work_order' %}">新規作成</a>
+    {% if work_orders %}
+    <a href="{% url 'sagyoshiji:export_sagyoshijihyo_csv' %}" >指示票出力</a>
+    <a href="{% url 'sagyoshiji:export_workorderprogress_csv' %}" >進捗出力</a>
+    {% endif %}{% endif %}
+    </div>
+</div>
 <br><br><br>
 
     
@@ -34,7 +51,7 @@
         <h1>データがありません</h1>
         <p>「新規作成」から作成</p>
     {% else %}
-    
+    <h3 class="count_bs">作業指示票総数：{{ wo_count }}</h3>
     {% for order in work_orders %}
     <a href="{% url 'sagyoshiji:work_order_detail' order.pk %}" style="text-decoration: none; color:black;" title="作業指示の詳細を確認する">
     <div class="wo_list">
@@ -49,7 +66,8 @@
             <a href="{% url 'sagyoshiji:delete_work_order' order.pk %}" class="up_del">削除</a>
             {% endif %}
             <br>
-    </div>
+    </div></a>
+    <a href="{% url 'sagyoshiji:work_order_detail' order.pk %}" style="text-decoration: none; color:black;" title="作業指示の詳細を確認する">
     <div class="wo_list_sp">
         <p align="left" style="font-size: small; padding:1px;">作業指示番号：{{ order.work_order_number }} / 発行日：{{ order.release_date }}</p>
         <h3><u>工番-枝番：{{ order.work_number }}ー{{ order.work_trenum }} </h3><h1> 件名：{{ order.subject }}</u></h1>
@@ -62,8 +80,7 @@
         <a href="{% url 'sagyoshiji:delete_work_order' order.pk %}" class="up_del">削除</a>
         {% endif %}
         <br>
-    </div>
-        </a><br>
+    </div></a><br><br>
         {% endfor %}
     {% endif %}
 
