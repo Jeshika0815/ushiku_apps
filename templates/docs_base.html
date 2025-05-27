@@ -27,15 +27,15 @@
     </script>
 </head>
 <body>
-    <header>
-        <div class="hsu">
+    <header class="printnot">
+        <div class="hsu printnot hsel">
 
-        <a href="/" class="hm"><img src="{% static 'ico/shirayama_app_mm.png' %}" class="h_icon" alt="HOME"><b>Ushiku</b></a>
+        <a href="/" class="hm"><img src="{% static 'ico/shirayama_app_mm.png' %}" class="h_icon" alt="HOME"><b style="font-size: large;">Ushiku</b></a>
         <a href="{% url 'sagyoshiji:work_order_list' %}"class="hm">作業指示票</a>
         <a href="{% url 'sagyodenpyo:work_logs' %}" class="hm">作業伝票</a>     
         </div>
         
-        <div class="hsu">
+        <div class="hsu printnot hsel">
 
             <a href="tel:0298698330" class="hm" title="牛久工場へ電話をかける"><img src="{% static 'svgs/call.svg' %}" class="h_icon" alt="電話"></a>
             <a href="{% url 'docs:app_docs' %}" class="hm"><img src="{% static 'svgs/question.svg' %}" class="h_icon" alt="ヘルプ"></a>
@@ -62,7 +62,9 @@
     <div class="hsu printnot hsonl">
         {% if request.user.is_superuser %}
         <a href="{% url 'admin:index' %}" class="hm" onclick="return alert('管理画面に移動します。');">アカウント管理</a>　
-        {% endif %}
+        {% endif %}         
+        
+        <a href="tel:0298698330" class="hm" title="牛久工場へ電話をかける"><img src="{% static 'svgs/call.svg' %}" class="h_icon" alt="電話"></a>
         <a href="{% url 'docs:app_docs' %}" class="hm"><img src="{% static 'svgs/question.svg' %}" class="h_icon" alt="ヘルプ"></a>
     </div>
     </header>
@@ -94,8 +96,8 @@
     <div class="menus"><div align="center">
         <a href="/" class="hm"><img src="{% static 'svgs/home.svg' %}" class="h_icon" alt="HOME"></a>
         <a href="{% url 'sagyoshiji:work_order_list' %}"class="hm">作業指示票</a>
-        <a href="{% url 'sagyodenpyo:work_logs' %}" class="hm">作業履歴</a>  
-        <a href="{% url 'home:user_profile' %}" style="text-decoration: none;"><span class="userbox"><img src="{% static 'svgs/user.svg' %}" class="h_icon" style="border: 1px solid dimgray; border-radius: 10px; padding:3px 5px;"></span></a>　
+        <a href="{% url 'sagyodenpyo:work_logs' %}" class="hm">作業伝票</a>  
+        <a href="{% url 'home:user_profile' %}" style="text-decoration: none;"><span class="userbox"><img src="{% static 'svgs/user.svg' %}" class="h_icon" style="border: 1px solid dimgray; border-radius: 5px; padding:3px 5px;"></span></a>　
 
     </div></div>
     <noscript>
