@@ -3,12 +3,19 @@
 {% block title %}作業伝票集計 - Ushiku{% endblock %}
 
 {% block content %}
+<style>
+    .count_bs{display:none;}
+    @media screen and (max-width: 450px){
+        .count_bs{display:block;}
+        label{font-size: small;}
+    }
+</style>
 <div class="subhead">
     <div>
     作業伝票集計　　
     <a href="{% url 'sagyodenpyo:log_work' %}">新規作成</a>
-    <a href="{% url 'sagyodenpyo:work_logs' %}">個人の履歴</a>
-    <a href="{% url 'sagyodenpyo:all-logs' %}">全体の履歴</a>
+    <a href="{% url 'sagyodenpyo:work_logs' %}">個人の伝票</a>
+    <a href="{% url 'sagyodenpyo:all-logs' %}">全体の伝票</a>
     <a href="{% url 'sagyodenpyo:export_work_logs_csv' %}">伝票全体出力</a>
     
     
@@ -17,16 +24,27 @@
         存在する件数：<b>{{ count_logss }}件</b>
     </div>
 </div>
+<div class="subhead_sp">
+    <div>
+    作業伝票集計　　
+    <a href="{% url 'sagyodenpyo:work_logs' %}">個人</a>
+    <a href="{% url 'sagyodenpyo:all-logs' %}">全体</a>
+    <a href="{% url 'sagyodenpyo:export_work_logs_csv' %}">伝票全体出力</a>
+    
+    
+    </div>
+</div>
 <br><br><br>
 <form method="get">
     <label for="date">日付を選択:</label>
     <input type="date" name="date" id="date" value="{{ selected_date|date:'Y-m-d' }}">
-    <button type="submit">集計する</button>
+    <button type="submit">集計</button>
 </form>
 <br>
 <div class="alert alert-info mt-3 spmin_h1">
 {{ selected_date|date:'Y年m月d日' }}の総作業時間: {{ total_hours }} 時間 {{ total_minute }}分
 </div>
+<div class="count_bs"><h4>存在する件数：<b>{{ count_logss }}件</b></h4></div>
 <br>
 {% if count_logss > 0 %}
 {% for kouban, data in order_summary.items %}
@@ -52,7 +70,7 @@
             </tbody>
         </table>
 
-    </div><br>
+    </div><br><br>
 {% endfor %}
 {% else %}
 <div class="wlog_c">

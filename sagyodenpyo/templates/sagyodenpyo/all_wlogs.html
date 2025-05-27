@@ -3,10 +3,17 @@
 {% block title %}全体の作業伝票一覧 - Ushiku{% endblock %}
 
 {% block content %}
+<style>
+    .count_bs{display:none;}
+    @media screen and (max-width: 450px){
+        .count_bs{display:block;}
+    }
+</style>
+<style>@media screen and (max-width:450px){ table{font-size: small;} }</style>
 <div class="subhead">
     <div>
     全体の作業伝票一覧　　
-    {% if request.user.is_superuser %}
+    {% if request.user.is_staff %}
     <a href="{% url 'sagyodenpyo:log_work' %}">新規作成</a>
     <a href="{% url 'sagyodenpyo:work_logs' %}">個人の伝票</a>
     <a href="{% url 'sagyodenpyo:totals' %}">集計</a>
@@ -14,11 +21,26 @@
     {% endif %}
     </div>
     <div>
-        期間内に存在する日数：<b>{{ wl_count }}日</b>
+        伝票件数：<b>{{ wl_count }}件名</b>
+    </div>
+</div>
+<div class="subhead_sp">
+    <div>
+    全体の作業伝票一覧　
+    {% if request.user.is_staff %}
+    <a href="{% url 'sagyodenpyo:work_logs' %}">個人</a>｜
+    <a href="{% url 'sagyodenpyo:totals' %}">集計</a>｜
+    <a href="{% url 'sagyodenpyo:export_work_logs_csv' %}">全体伝票出力</a>
+    {% endif %}
     </div>
 </div>
 <br><br><br>
-<table border>
+<div class="count_bs">
+    <h3>伝票件数：{{ wl_count }}件</h3>
+</div>
+<div style="width:100%; overflow: auto;">
+    <div style="width:700px;">
+<table border >
     <thead>
     <tr>
         <th>ID</th>
@@ -46,6 +68,6 @@
 {% empty %}
         <tr><td colspan="6">作業伝票はありません。</td></tr>
 {% endfor %}
-    </tbody>
-</table>
+    </tbody><br>
+</table></div></div><br><br>
 {% endblock %}
