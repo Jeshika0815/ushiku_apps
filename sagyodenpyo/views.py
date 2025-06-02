@@ -161,10 +161,10 @@ from .models import WorkLog
 def export_work_logs_csv(request):
     from urllib.parse import quote
     # CSVレスポンス設定
-    filename = f"全体の作業伝票 - {datetime.datetime.now().strftime("%Y%m%d")}.csv"
+    filename = f"全体の作業伝票 - {datetime.datetime.now().strftime('%Y%m%d')}.csv"
     encoded_fname = quote(filename)
     response = HttpResponse(content_type='text/csv; charset=shift_jis')
-    response['Content-Disposition'] = f'attachment; filename*=UTF-8\'\'{encoded_fname}'
+    response['Content-Disposition'] = f"attachment; filename*=UTF-8\'\'{encoded_fname}"
 
     # Shift-JIS でエンコードされた CSV データを生成
     writer = csv.writer(response, quoting=csv.QUOTE_MINIMAL)
