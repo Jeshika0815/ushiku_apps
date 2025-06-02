@@ -11,12 +11,12 @@
     <link rel="manifest" href="{% static 'pwa/manifest.json' %}">
     <script>
         if('serviceWorker' in navigator){
-            navigator.serviceWorker.register("{% static 'pwa/service-worker.js' %}")
-            .then(function(registration){
+            navigator.serviceWorker.register("{% static 'pwa/service-worker.js' %}");
+            /*.then(function(registration){
                 console.log('Service Worker registered with scope:', registration.scope);
             }).catch(function(err){
                 console.log('Service Worker registration failed:', err);
-            });
+            });*/
         }
     </script>
     <script>
@@ -24,6 +24,15 @@
             let color = '#5dccfa';
             document.querySelector('meta[name="theme-color"]').setAttribute('content', color);
         });
+    </script>
+    <script>
+        //スマホ版戻るボタンの表示制御
+        const back_button = document.getElementById('spbb');
+        if(window.history.length > 1){
+            back_button.style.display = 'block';
+        }else{
+            back_button.style.display = 'none';
+        }
     </script>
 </head>
 <body>
@@ -57,6 +66,7 @@
     {% endif %}
     </div>
     <div class="hsu printnot hsonl">
+        <a href="#" class="hm" onclick="history.back(); return false;" id="spbb">＜</a> 
         <img src="{% static 'ico/shirayama_app_mm.png' %}" class="h_icon" alt="HOME"><b style="font-size: large;">Ushiku</b>
     </div>
     <div class="hsu printnot hsonl">
@@ -71,7 +81,7 @@
     <br><br><br>
     <main>
         <div align="center">
-        <div class="mokuji">
+        <!--div class="mokuji">
             <h3>目次</h3>
             <ol align="left">
                 <li><a href="{% url 'docs:app_docs' %}">ホーム</a></li>
@@ -83,9 +93,9 @@
                     <li><a href="/docs/user_guide/#1">aaa</a></li>
                 </ol>
             </ol>
-        </div>
+        </div-->
 
-        <h1 id="-" align="center">シラヤマ作業管理アプリ</h1>
+        <h1 id="-" align="center">Ushiku</h1>
         <h3 id="-">ドキュメントページ</h3>
         <div align="center" class="content">
         {% block content %}
