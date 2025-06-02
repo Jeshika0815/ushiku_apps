@@ -10,6 +10,9 @@
     {% csrf_token %}
     <button type="submit" onclick="return confirm('ログアウトしてもよろしいですか？');">ログアウト</button>
 </form>
+{% if request.user.is_superuser %}
+<button class="hm" onclick="location.href = '{% url 'admin:index' %}'; return alert('管理画面に移動します。');">アカウント管理</button>
+{% endif %}
 </div>
 
 <hr style="border:1px solid silver; width:70%;">

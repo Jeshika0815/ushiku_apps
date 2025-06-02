@@ -28,8 +28,7 @@
                 <p align="left" style="font-size: small;">作業指示表番号：{{ order.work_order_number }}　工番：{{ order.work_number }}　枝番：{{ order.work_trenum }} </p>
                 <h3>件名：{{ order.subject }}</h3>
                 <p style="font-size: small;">作業開始日：{{ order.start_date }}　作業終了日：{{ order.end_date }}</p>
-                <br>
-                
+                <p>作業範囲：{{ order.work_range }} <br> <strong>{{ order.work_type }}</strong></p>
                 <h4 style="margin: 0;">作業進捗率</h4>
                 <p style="margin:0;">進捗率： {{ order.progress_rate }} %</p>
                 <div class="progress-container" align="left">
@@ -53,7 +52,7 @@
                             height: 30px;
                             text-align: center;
                             line-height: 30px;
-                            background:rgb(21, 255, 0);
+                            background:rgb(20, 237, 0);
                             color: white;
                         }
                     </style>
