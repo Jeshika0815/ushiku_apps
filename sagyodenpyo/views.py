@@ -195,7 +195,7 @@ def export_work_logs_csv(request):
     return response
 
 #個人の作業履歴の出力
-
+"""
 @login_required
 def export_personal_work_logs_csv(request):
     from urllib.parse import quote
@@ -230,7 +230,7 @@ def export_personal_work_logs_csv(request):
         response.write(",".join(row).encode('shift_jis') + b"\r\n")
 
     return response
-
+"""
 
 # other functions
 
