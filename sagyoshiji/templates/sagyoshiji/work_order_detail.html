@@ -31,13 +31,14 @@
     </div>
     <div class="subhead_sp">
         <div>
+            <div style="width:390px;">
         作業指示票詳細　No.{{ work_order.work_order_number }}　
         
-        <a href="{% url 'sagyoshiji:edit_work_order' work_order.pk %}">修正・作業進捗登録</a> |
+        <a href="{% url 'sagyoshiji:edit_work_order' work_order.pk %}">修正・作業進捗登録</a>　
         {% if request.user.is_superuser %}
         <a href="{% url 'sagyoshiji:delete_work_order' work_order.pk %}">削除</a>
         {% endif %}
-        </div>
+        </div></div>
     </div><br><br>
  
     <div class="printnot fullsc1" >
