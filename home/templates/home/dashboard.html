@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}HOME{% endblock %}
+{% block title %}HOME - Ushiku{% endblock %}
 
 {% block content %}
     <style>
@@ -12,9 +12,7 @@
             width:700px;
         } .gta label{font-size: x-large; font-weight: bold;} .gta img{width:600px; height:350px;}
 
-        .s_container{width:500px; height:300px; position:relative; overflow: hidden; border-radius: 10px;}
-        .card{width:100%; height:100%; padding:5px 10px; padding-bottom: 10px; position: absolute; top:0; left:100%; background:rgb(0, 255, 242); border:1px solid rgb(0, 255, 242);  align-items: center; justify-content: center; transition: left 0.5s ease-in-out;}
-        .act_card{left:0;}
+
     </style>
 <div align="center">
 {% if not work_orders %}
@@ -25,13 +23,12 @@
 {% else %}
     <div class="s_container">
         {% for order in work_orders %}
+        <a href="{% url 'sagyoshiji:work_order_detail' order.pk %}" class="card_anker">
             <div class="card act_card">
                 <p align="left" style="font-size: small;">作業指示表番号：{{ order.work_order_number }}　工番：{{ order.work_number }}　枝番：{{ order.work_trenum }} </p>
                 <h3>件名：{{ order.subject }}</h3>
                 <p style="font-size: small;">作業開始日：{{ order.start_date }}　作業終了日：{{ order.end_date }}</p>
-                <a href="{% url 'sagyoshiji:work_order_detail' order.pk %}" class="sub_bt">詳細を見る</a>
-                <br><br>
-                
+                <p>作業範囲：{{ order.work_range }} <br> <strong>{{ order.work_type }}</strong></p>
                 <h4 style="margin: 0;">作業進捗率</h4>
                 <p style="margin:0;">進捗率： {{ order.progress_rate }} %</p>
                 <div class="progress-container" align="left">
@@ -55,12 +52,12 @@
                             height: 30px;
                             text-align: center;
                             line-height: 30px;
-                            background:rgb(21, 255, 0);
+                            background:rgb(20, 237, 0);
                             color: white;
                         }
                     </style>
-                </p>
-            </div>
+                 
+            </div></a>
         {% endfor %}
     </div><br>
     {% if work_order_count > 1 %}
@@ -69,7 +66,7 @@
 {% endif %}
 <br>
 <h2>Work Pad</h2>
-<div class="wpad_b">
+<div class="wpad_b"><div class="wpad_ba">
 
     <a href="{% url 'sagyodenpyo:log_work' %}" style="color:black;">
     <div class="wpad">
@@ -77,50 +74,25 @@
     <div align=center><img src="{% static 'svgs/add.svg' %}" class="wpad_m" alt=""></div><br><br>
     <div align=center><p class="wpad_fo">作業伝票作成</p></div><br>
     </div></a>
-
+    {% if request.user.is_staff %}
     <a href="{% url 'sagyoshiji:register_work_order' %}" style="color:black;">
         <div class="wpad">
         <div class="wpad_ma"></div><br>
         <div align=center><img src="{% static 'svgs/add.svg' %}" class="wpad_m" alt="指示票作成"></div><br><br>
         <div align=center><p class="wpad_fo">作業指示票作成</p></div><br>
-        </div></a>
+    </div></a>
 
+    <a href="{% url 'sagyodenpyo:totals' %}" style="color:black;">
+        <div class="wpad">
+        <div class="wpad_ma"></div><br>
+        <div align=center><img src="{% static 'svgs/add.svg' %}" class="wpad_m" alt=""></div><br><br>
+        <div align=center><p class="wpad_fo">作業伝票集計</p></div><br>
+    </div></a>
+    {% endif %}
         
 
 </div></div>
 
-
-<h2 align="center">”{{user.first_name}} {{user.last_name}}”の作業履歴＜データ確認用・廃止＞</h2>
-{% if not work_logs %}
-<div style="width:70%; padding:5px 10px; background:rgb(188, 255, 235); padding-bottom:20px; border-radius: 10px;">
-    <h2>まだ作業履歴が存在しません。</h2>
-</div>
-{% else %}
-<table style="margin: 0 auto; border-collapse: collapse;"border="1">
-    <thead>
-        <tr>
-            <th>日付</th>
-            <th>工番</th>
-            <th>枝番</th>
-            <th>件名</th>
-            <th>作業コード</th>
-            <th>作業時間</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for log in work_logs %}
-        <tr>
-            <td>{{ log.date }}</td>
-            <td>{{ log.work_number }}</td>
-            <td>{{ log.work_trenum }}</td>
-            <td>{{ log.subject }}</td>
-            <td>{{ log.get_work_code_display }}</td>
-            <td>{{ log.work_hours }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-{% endif %}
 </div></div>
 <script>
     let currentIndex = 0;
@@ -132,6 +104,7 @@
         cards.forEach((card, i) => {
             card.classList.remove('act_card');
             card.style.left = (i === index) ? '0' : '100%';
+            card.style.pointerEvents = (i === index)? 'auto' : 'none';
         });
         cards[index].classList.add('act_card');
         showpage.innerHTML = (index + 1) + '/' + total_cards;
@@ -147,6 +120,7 @@
         showCard(currentIndex);
     }
     setInterval(nextCard, 10000);
+    
 </script>
 <br>
 {% endblock %}
